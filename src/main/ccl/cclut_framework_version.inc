@@ -9,7 +9,7 @@
 */
 declare public::cclutFillStr(cclutLen = i4, cclutFill = vc) = vc with protect
 
-declare cclut::FRAMEWORK_VERSION = vc with protect, constant("3.4")
+declare cclut::FRAMEWORK_VERSION = vc with protect, constant("3.5-SNAPSHOT")
 declare cclut::MINIMUM_REQUIRED_CCL_VERSION = vc with protect, constant("8.12.0")
 declare cclut::FRAMEWORK_STATE_MARGIN = i4 with protect, constant(4)
 

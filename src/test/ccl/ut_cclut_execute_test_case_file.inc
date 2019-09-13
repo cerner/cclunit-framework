@@ -90,7 +90,7 @@ record ucetcf_reply (
 */
 subroutine testNoIssues(null)
   declare stat = i4 with protect, noconstant(0)
-  
+
   set stat = copyRec(ucetcf_request, ucetcf_request1, 1)
   call cclutAssertI4Equal(CURREF, "validate copyRec", stat, TRUE)
   if (validate(cclut_request) = TRUE)
@@ -101,9 +101,9 @@ subroutine testNoIssues(null)
     endif
   endif
   set ucetcf_request1->enforcePredeclare = TRUE
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request1), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request1),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
 
@@ -114,7 +114,7 @@ subroutine testNoIssues(null)
   call validateListingXml(ucetcf_reply->listingXml)
   call validateResultsXml(ucetcf_reply->resultsXml, FALSE)
   call validateCoverageXml(ucetcf_reply->coverageXml)
-end ;;;testNoIssues 
+end ;;;testNoIssues
 
 
 /**
@@ -122,16 +122,16 @@ end ;;;testNoIssues
 */
 subroutine testNoIssuesCBO(null)
   declare stat = i4 with protect, noconstant(0)
-  
+
   set stat = copyRec(ucetcf_request, ucetcf_request1, 1)
   call cclutAssertI4Equal(CURREF, "validate copyRec", stat, TRUE)
   set ucetcf_request1->optimizerMode = "CBO"
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request1), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request1),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-  
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
   call validateNoIssuesResponse(ucetcf_testCaseResults)
 end ;;;testNoIssuesCBO
@@ -141,16 +141,16 @@ end ;;;testNoIssuesCBO
 */
 subroutine testNoIssuesRBO(null)
   declare stat = i4 with protect, noconstant(0)
-  
+
   set stat = copyRec(ucetcf_request, ucetcf_request1, 1)
   call cclutAssertI4Equal(CURREF, "validate copyRec", stat, TRUE)
   set ucetcf_request1->optimizerMode = "RBO"
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request1), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request1),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-  
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
   call validateNoIssuesResponse(ucetcf_testCaseResults)
 end ;;;testNoIssuesRBO
@@ -161,19 +161,19 @@ end ;;;testNoIssuesRBO
 */
 subroutine testNoIssuesInvalidOM(null)
   declare stat = i4 with protect, noconstant(0)
-  
+
   set stat = copyRec(ucetcf_request, ucetcf_request1, 1)
   call cclutAssertI4Equal(CURREF, "validate copyRec", stat, TRUE)
   set ucetcf_request1->optimizerMode = "invalid"
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request1), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request1),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
 
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "F")
-  call cclutAssertVCEqual(CURREF, "execute success 5", 
-      ucetcf_reply->status_data.subeventstatus[1].targetObjectValue, "Invalid optimizer mode specified.")  
+  call cclutAssertVCEqual(CURREF, "execute success 5",
+      ucetcf_reply->status_data.subeventstatus[1].targetObjectValue, "Invalid optimizer mode specified.")
 end ;;;testNoIssuesInvalidOM
 
 
@@ -189,30 +189,30 @@ subroutine testErrorsEverywhere(null)
   set testing::errorTest = TRUE
   set testing::errorTeardown = TRUE
   set testing::errorTeardownOnce = TRUE
- 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
-  
+
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 
   set testCount = size(ucetcf_testCaseResults->tests, 5)
   call cclutAssertI4Equal(CURREF, "test count", testCount, 5)
-  
+
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[1].asserts, 5), 2)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 1)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[1].context, "setupOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[1].condition, '"SO" = "SO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[1].resultInd, TRUE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[2].context, "setupOnce error")
   call cclutAssertStartsWith(CURREF, "errorText", "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[1].errors[1].errorText)
-  call cclutAssertContains(CURREF, "errorText", 
+  call cclutAssertContains(CURREF, "errorText",
       "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
       ucetcf_testCaseResults->tests[1].errors[1].errorText)
 
@@ -236,15 +236,15 @@ subroutine testErrorsEverywhere(null)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[2].asserts[6].context, "teardown error")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[2].asserts[6].condition, "1 = 1")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[2].asserts[6].resultInd, TRUE)
-  
+
   for (errorIdx = 1 to 3)
-    call cclutAssertStartsWith(CURREF, "errorText", 
+    call cclutAssertStartsWith(CURREF, "errorText",
         "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[2].errors[errorIdx].errorText)
-    call cclutAssertContains(CURREF, "errorText", 
+    call cclutAssertContains(CURREF, "errorText",
         "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
         ucetcf_testCaseResults->tests[2].errors[errorIdx].errorText)
   endfor
-  
+
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[3].asserts, 5), 6)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[3].errors, 5), 2)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[3].asserts[1].context, "setup executed")
@@ -266,9 +266,9 @@ subroutine testErrorsEverywhere(null)
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[3].asserts[6].condition, "1 = 1")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[3].asserts[6].resultInd, TRUE)
   for (errorIdx = 1 to 2)
-    call cclutAssertStartsWith(CURREF, "errorText", 
+    call cclutAssertStartsWith(CURREF, "errorText",
         "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[3].errors[errorIdx].errorText)
-    call cclutAssertContains(CURREF, "errorText", 
+    call cclutAssertContains(CURREF, "errorText",
         "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
         ucetcf_testCaseResults->tests[3].errors[errorIdx].errorText)
   endfor
@@ -291,27 +291,27 @@ subroutine testErrorsEverywhere(null)
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[4].asserts[5].condition, "1 = 1")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[4].asserts[5].resultInd, TRUE)
   for (errorIdx = 1 to 4)
-    call cclutAssertStartsWith(CURREF, "errorText", 
+    call cclutAssertStartsWith(CURREF, "errorText",
         "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[4].errors[errorIdx].errorText)
-    call cclutAssertContains(CURREF, "errorText", 
+    call cclutAssertContains(CURREF, "errorText",
         "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
         ucetcf_testCaseResults->tests[4].errors[errorIdx].errorText)
   endfor
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[5].asserts, 5), 2)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[5].errors, 5), 1)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[1].context, "teardownOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[1].condition, '"TO" = "TO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[1].resultInd, TRUE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[2].context, "teardownOnce error")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[2].condition, '1 = 1')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[2].resultInd, TRUE)
   call cclutAssertStartsWith(CURREF, "errorText", "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[4].errors[1].errorText)
-  call cclutAssertContains(CURREF, "errorText", 
+  call cclutAssertContains(CURREF, "errorText",
       "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
       ucetcf_testCaseResults->tests[4].errors[1].errorText)
 end ;;;testErrorsEverywhere
@@ -335,14 +335,14 @@ subroutine testFailsAndErrorsEverywhere(null)
   set testing::failTest = TRUE
   set testing::failTeardown = TRUE
   set testing::failTeardownOnce = TRUE
- 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
-  
+
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 
   set testCount = size(ucetcf_testCaseResults->tests, 5)
@@ -350,23 +350,23 @@ subroutine testFailsAndErrorsEverywhere(null)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[1].asserts, 5), 3)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 1)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[1].context, "setupOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[1].condition, '"SO" = "SO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[1].resultInd, TRUE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[2].context, "setupOnce failure")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[2].condition, "0 = 1")
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[2].resultInd, FALSE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[3].context, "setupOnce error")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[3].condition, "1 = 1")
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[3].resultInd, TRUE)
   call cclutAssertStartsWith(CURREF, "errorText", "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[1].errors[1].errorText)
-  call cclutAssertContains(CURREF, "errorText", 
+  call cclutAssertContains(CURREF, "errorText",
       "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
       ucetcf_testCaseResults->tests[1].errors[1].errorText)
 
@@ -400,13 +400,13 @@ subroutine testFailsAndErrorsEverywhere(null)
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[2].asserts[9].condition, "1 = 1")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[2].asserts[9].resultInd, TRUE)
   for (errorIdx = 1 to 3)
-    call cclutAssertStartsWith(CURREF, "errorText", 
+    call cclutAssertStartsWith(CURREF, "errorText",
         "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[2].errors[errorIdx].errorText)
-    call cclutAssertContains(CURREF, "errorText", 
+    call cclutAssertContains(CURREF, "errorText",
         "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
         ucetcf_testCaseResults->tests[2].errors[errorIdx].errorText)
   endfor
-  
+
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[3].asserts, 5), 8)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[3].errors, 5), 2)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[3].asserts[1].context, "setup executed")
@@ -434,9 +434,9 @@ subroutine testFailsAndErrorsEverywhere(null)
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[3].asserts[8].condition, "1 = 1")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[3].asserts[8].resultInd, TRUE)
   for (errorIdx = 1 to 2)
-    call cclutAssertStartsWith(CURREF, "errorText", 
+    call cclutAssertStartsWith(CURREF, "errorText",
         "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[3].errors[errorIdx].errorText)
-    call cclutAssertContains(CURREF, "errorText", 
+    call cclutAssertContains(CURREF, "errorText",
         "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
         ucetcf_testCaseResults->tests[3].errors[errorIdx].errorText)
   endfor
@@ -471,32 +471,32 @@ subroutine testFailsAndErrorsEverywhere(null)
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[4].asserts[9].condition, "1 = 1")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[4].asserts[9].resultInd, TRUE)
   for (errorIdx = 1 to 3)
-    call cclutAssertStartsWith(CURREF, "errorText", 
+    call cclutAssertStartsWith(CURREF, "errorText",
         "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[4].errors[errorIdx].errorText)
-    call cclutAssertContains(CURREF, "errorText", 
+    call cclutAssertContains(CURREF, "errorText",
         "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
         ucetcf_testCaseResults->tests[4].errors[errorIdx].errorText)
   endfor
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[5].asserts, 5), 3)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[5].errors, 5), 1)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[1].context, "teardownOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[1].condition, '"TO" = "TO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[1].resultInd, TRUE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[2].context, "teardownOnce failure")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[2].condition, "0 = 1")
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[2].resultInd, FALSE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[3].context, "teardownOnce error")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[3].condition, "1 = 1")
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[3].resultInd, TRUE)
   call cclutAssertStartsWith(CURREF, "errorText", "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[5].errors[1].errorText)
-  call cclutAssertContains(CURREF, "errorText", 
+  call cclutAssertContains(CURREF, "errorText",
       "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
       ucetcf_testCaseResults->tests[5].errors[1].errorText)
 end ;;;testFailsAndErrorsEverywhere
@@ -513,14 +513,14 @@ subroutine testFailsEverywhere(null)
   set testing::failTest = TRUE
   set testing::failTeardown = TRUE
   set testing::failTeardownOnce = TRUE
- 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
-  
+
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 
   set testCount = size(ucetcf_testCaseResults->tests, 5)
@@ -528,15 +528,15 @@ subroutine testFailsEverywhere(null)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[1].asserts, 5), 2)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[1].context, "setupOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[1].condition, '"SO" = "SO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[1].resultInd, TRUE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[2].context, "setupOnce failure")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[2].condition, "0 = 1")
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[2].resultInd, FALSE)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[2].asserts, 5), 6)
@@ -559,7 +559,7 @@ subroutine testFailsEverywhere(null)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[2].asserts[6].context, "teardown failure")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[2].asserts[6].condition, "0 = 1")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[2].asserts[6].resultInd, FALSE)
-  
+
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[3].asserts, 5), 6)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[3].errors, 5), 0)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[3].asserts[1].context, "setup executed")
@@ -607,35 +607,35 @@ subroutine testFailsEverywhere(null)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[5].asserts, 5), 2)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[5].errors, 5), 0)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[1].context, "teardownOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[1].condition, '"TO" = "TO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[1].resultInd, TRUE)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[2].context, "teardownOnce failure")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[2].condition, "0 = 1")
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[2].resultInd, FALSE)
 end ;;;testFailsEverywhere
 
 
 /**
-  Run ut_cclut_suo_su_td_tdo and validate the results when the test subroutines produce a failed assert 
+  Run ut_cclut_suo_su_td_tdo and validate the results when the test subroutines produce a failed assert
   but there are no other problems.
 */
 subroutine testFailsTestsOnly(null)
   declare testCount = i4 with protect, noconstant(0)
-  
+
   set testing::failTest = TRUE
- 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
-  
+
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 
   set testCount = size(ucetcf_testCaseResults->tests, 5)
@@ -643,10 +643,10 @@ subroutine testFailsTestsOnly(null)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[1].asserts, 5), 1)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[1].context, "setupOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[1].condition, '"SO" = "SO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[1].resultInd, TRUE)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[2].asserts, 5), 4)
@@ -663,7 +663,7 @@ subroutine testFailsTestsOnly(null)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[2].asserts[4].context, "teardown executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[2].asserts[4].condition, "0 = 0")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[2].asserts[4].resultInd, TRUE)
-  
+
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[3].asserts, 5), 4)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[3].errors, 5), 0)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[3].asserts[1].context, "setup executed")
@@ -699,30 +699,30 @@ subroutine testFailsTestsOnly(null)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[5].asserts, 5), 1)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[5].errors, 5), 0)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[1].context, "teardownOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[1].condition, '"TO" = "TO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[1].resultInd, TRUE)
 end ;;;testFailsTestsOnly
 
 
 /**
-  Run ut_cclut_suo_su_td_tdo and validate the results when the setup subroutine causes an error 
+  Run ut_cclut_suo_su_td_tdo and validate the results when the setup subroutine causes an error
   but there are no other problems.
 */
 subroutine testSetupErrors(null)
   declare testCount = i4 with protect, noconstant(0)
 
   set testing::errorSetup = TRUE
- 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
-  
+
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 
   set testCount = size(ucetcf_testCaseResults->tests, 5)
@@ -730,10 +730,10 @@ subroutine testSetupErrors(null)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[1].asserts, 5), 1)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[1].asserts[1].context, "setupOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[1].asserts[1].condition, '"SO" = "SO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[1].asserts[1].resultInd, TRUE)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[2].asserts, 5), 4)
@@ -750,12 +750,12 @@ subroutine testSetupErrors(null)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[2].asserts[4].context, "teardown executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[2].asserts[4].condition, "0 = 0")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[2].asserts[4].resultInd, TRUE)
-  call cclutAssertStartsWith(CURREF, "errorText", 
+  call cclutAssertStartsWith(CURREF, "errorText",
       "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[2].errors[1].errorText)
-  call cclutAssertContains(CURREF, "errorText", 
+  call cclutAssertContains(CURREF, "errorText",
       "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
       ucetcf_testCaseResults->tests[2].errors[1].errorText)
-  
+
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[3].asserts, 5), 5)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[3].errors, 5), 1)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[3].asserts[1].context, "setup executed")
@@ -773,9 +773,9 @@ subroutine testSetupErrors(null)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[3].asserts[5].context, "teardown executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[3].asserts[5].condition, "0 = 0")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[3].asserts[5].resultInd, TRUE)
-  call cclutAssertStartsWith(CURREF, "errorText", 
+  call cclutAssertStartsWith(CURREF, "errorText",
       "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[2].errors[1].errorText)
-  call cclutAssertContains(CURREF, "errorText", 
+  call cclutAssertContains(CURREF, "errorText",
       "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
       ucetcf_testCaseResults->tests[2].errors[1].errorText)
 
@@ -793,18 +793,18 @@ subroutine testSetupErrors(null)
   call cclutAssertVCEqual(CURREF, "assert context", ucetcf_testCaseResults->tests[4].asserts[4].context, "teardown executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[4].asserts[4].condition, "0 = 0")
   call cclutAssertI4Equal(CURREF, "assert status", ucetcf_testCaseResults->tests[4].asserts[4].resultInd, TRUE)
-  call cclutAssertStartsWith(CURREF, "errorText", 
+  call cclutAssertStartsWith(CURREF, "errorText",
       "%CCL-E-94-PRG_", ucetcf_testCaseResults->tests[2].errors[1].errorText)
-  call cclutAssertContains(CURREF, "errorText", 
+  call cclutAssertContains(CURREF, "errorText",
       "{GUARANTEEDERROR}Assignment of Report expression (GUARANTEEDERROR) to incompatible type.",
       ucetcf_testCaseResults->tests[2].errors[1].errorText)
 
   call cclutAssertI4Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[5].asserts, 5), 1)
   call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[5].errors, 5), 0)
-  call cclutAssertVCEqual(CURREF, "assert context", 
+  call cclutAssertVCEqual(CURREF, "assert context",
       ucetcf_testCaseResults->tests[5].asserts[1].context, "teardownOnce executed")
   call cclutAssertVCEqual(CURREF, "assert condition", ucetcf_testCaseResults->tests[5].asserts[1].condition, '"TO" = "TO"')
-  call cclutAssertI4Equal(CURREF, "assert value", 
+  call cclutAssertI4Equal(CURREF, "assert value",
       ucetcf_testCaseResults->tests[5].asserts[1].resultInd, TRUE)
 end ;;;testSetupErrors
 
@@ -814,20 +814,20 @@ end ;;;testSetupErrors
 subroutine testLoadingErrors(null)
   declare testing::errorLoading = i4 with protect, constant(TRUE)
   declare matches = i2 with protect, noconstant(FALSE)
- 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_testCaseResults->status_data.status, "F")
-  call cclutAssertVCEqual(CURREF, "execute success 2", 
-      ucetcf_testCaseResults->status_data.subeventstatus[1].operationName, "pre-executeTestLogic-0")
-  call cclutAssertVCEqual(CURREF, "execute success 3", 
+  call cclutAssertVCEqual(CURREF, "execute success 2",
+      ucetcf_testCaseResults->status_data.subeventstatus[1].operationName, "pre-executeTestLogic-0   ")
+  call cclutAssertVCEqual(CURREF, "execute success 3",
       ucetcf_testCaseResults->status_data.subeventstatus[1].operationStatus, "F")
-  call cclutAssertVCEqual(CURREF, "execute success 4", 
-      ucetcf_testCaseResults->status_data.subeventstatus[1].targetObjectName, "ut_cclut_suo_su_td_tdo")
-  set matches = operator(ucetcf_testCaseResults->status_data.subeventstatus[1].targetObjectValue, "regexplike", 
+  call cclutAssertVCEqual(CURREF, "execute success 4",
+      ucetcf_testCaseResults->status_data.subeventstatus[1].targetObjectName, "ut_cclut_suo_su_td_tdo   ")
+  set matches = operator(ucetcf_testCaseResults->status_data.subeventstatus[1].targetObjectValue, "regexplike",
 "%CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}\
 Assignment of Report expression \(GUARANTEEDERROR\) to incompatible type.")
   call cclutAssertI4Equal(CURREF, "execute success 5", matches, TRUE)
@@ -845,21 +845,21 @@ subroutine testTestCaseFileDoesNotExist(null)
   set stat = copyRec(ucetcf_request, ucetcf_request1, 1)
   call cclutAssertI4Equal(CURREF, "validate copyRec", stat, TRUE)
   set ucetcf_request1->testCaseFileName = "non-existant-test-case-file"
-  
-  execute cclut_execute_test_case_file with 
-     replace("CCLUTREQUEST", ucetcf_request1), 
+
+  execute cclut_execute_test_case_file with
+     replace("CCLUTREQUEST", ucetcf_request1),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
 
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "F")
   call cclutAssertVCEqual(CURREF, "execute success 2", 
-      ucetcf_reply->status_data.subeventstatus[1].operationName, "generateTestCaseProgram ")
+      ucetcf_reply->status_data.subeventstatus[1].operationName, "generateTestCaseProgram  ")
   call cclutAssertVCEqual(CURREF, "execute success 3", 
       ucetcf_reply->status_data.subeventstatus[1].operationStatus, "F")
-  call cclutAssertVCEqual(CURREF, "execute success 4", 
+  call cclutAssertVCEqual(CURREF, "execute success 4",
       ucetcf_reply->status_data.subeventstatus[1].targetObjectName, "non-existant-test-case-fi")
-  call cclutAssertVCEqual(CURREF, "execute success 5", 
-      ucetcf_reply->status_data.subeventstatus[1].targetObjectValue, "non-existant-test-case-file.inc not found in cclsource")  
+  call cclutAssertVCEqual(CURREF, "execute success 5",
+      ucetcf_reply->status_data.subeventstatus[1].targetObjectValue, "non-existant-test-case-file.inc not found in cclsource")
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 end ;;;testTestCaseFileDoesNotExist
 
@@ -867,14 +867,14 @@ end ;;;testTestCaseFileDoesNotExist
   Test a scenario where the current CCL version does not meet the minimum required version.
 */
 subroutine testCclMinimumNotMet(null)
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults),
       replace("GETCCLVERSION", getOutdatedCclVersion)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "F")
-  call cclutAssertVCEqual(CURREF, "execute success 5", ucetcf_reply->status_data.subeventstatus[1].targetObjectValue, 
+  call cclutAssertVCEqual(CURREF, "execute success 5", ucetcf_reply->status_data.subeventstatus[1].targetObjectValue,
   "The CCL version [1.0.0] does not meet the minimum version required [8.12.0] for this version of the CCL Unit Testing Framework")
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 end
@@ -890,7 +890,7 @@ subroutine testCompileProgramFailure(null)
   declare tov = vc with protect, noconstant("")
   declare idx = i4 with protect, noconstant(0)
   declare stat = i4 with protect, noconstant(0)
-  
+
   set stat = copyRec(ucetcf_request, ucetcf_request1, 1)
   call cclutAssertI4Equal(CURREF, "validate copyRec", stat, TRUE)
 
@@ -898,17 +898,18 @@ subroutine testCompileProgramFailure(null)
     set stat = alterlist(ucetcf_request1->programs, 1)
     set ucetcf_request1->programs[1].programName = "cclut"
     set ucetcf_request1->programs[1].compile = TRUE
-  endif  
+  endif
   set ucetcf_request1->programs[1].compile = TRUE
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request1), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request1),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults),
       replace("CCLUTCOMPILEPROGRAM", compileProgramFailure)
       
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.status, "F")
-  call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.subeventstatus[1].operationName, "compileProgram")
+  call cclutAssertVCEqual(CURREF, "execute success",
+    ucetcf_reply->status_data.subeventstatus[1].operationName, "compileProgram           ")
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.subeventstatus[1].operationStatus, "F")
   set tov = ucetcf_reply->status_data.subeventstatus[1].targetObjectValue
   call cclutAssertStartsWith(CURREF, "execute success", "compileProgram ", tov)
@@ -926,16 +927,16 @@ end ;;;testCompileProgramFailure
 */
 subroutine testGenerateTestCaseProgramFailure(null)
   declare prgStatus = i4 with protect, noconstant(0)
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults),
       replace("CCLUTGENERATETESTCASEPROGRAM", generateTestCaseProgramFailure)
       
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.status, "F")
   call cclutAssertVCEqual(CURREF, "execute success", 
-      ucetcf_reply->status_data.subeventstatus[1].operationName, "generateTestCaseProgram ")
+      ucetcf_reply->status_data.subeventstatus[1].operationName, "generateTestCaseProgram  ")
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.subeventstatus[1].operationStatus, "F")
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.subeventstatus[1].targetObjectValue,
       "generateTestCaseProgram failure forced by unit test")
@@ -952,22 +953,23 @@ end ;;;testGenerateTestCaseProgramFailure
 */
 subroutine testCheckPrgFailure(null)
   declare prgStatus = i4 with protect, noconstant(0)
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults),
       replace("CHECKPRG", checkPrgFailure)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.status, "F")
-  call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.subeventstatus[1].operationName, "CHECKPRG")
+  call cclutAssertVCEqual(CURREF, "execute success",
+    ucetcf_reply->status_data.subeventstatus[1].operationName, "CHECKPRG                 ")
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.subeventstatus[1].operationStatus, "F")
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
 
   call cclutAssertVCEqual(CURREF, "execute success", ucetcf_reply->status_data.subeventstatus[1].targetObjectValue,
       "Test case program for ut_cclut_suo_su_td_tdo not in CCL dictionary after compilation.")
-  ;Unless something bad happened, the test case program actually was compiled. 
-  ;The following check confirms that the framework dropped it even though checkprg failed. 
+  ;Unless something bad happened, the test case program actually was compiled.
+  ;The following check confirms that the framework dropped it even though checkprg failed.
   set prgStatus = checkPrg(ucetcf_reply->status_data.subeventstatus[1].targetObjectName)
   call cclutAssertI4Equal(CURREF, "test case program dropped", prgStatus, 0)
 end
@@ -985,11 +987,11 @@ subroutine testPostExecutionFailure(null)
   declare fileIndex = i4 with protect, noconstant(0)
   declare tov = vc with protect, noconstant("")
   declare cclut::debug = i2 with protect, noconstant(TRUE)
-    
+
   record filesToRemove(1 item[*] 2 location = vc)
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults),
       replace("REMOVE", mockRemove)
@@ -1004,16 +1006,16 @@ subroutine testPostExecutionFailure(null)
 
   set tov = trim(ucetcf_reply->status_data.subeventstatus[1].targetObjectValue)
   call cclutAssertStartsWith(CURREF, "execute success", "%CCL-E-94-CCLUT_EXECUTE_TEST_CASE_FILE(", tov)
-  call cclutAssertEndsWith(CURREF, "execute success", 
+  call cclutAssertEndsWith(CURREF, "execute success",
       "{REMOVEFAILURE}Assignment of Report expression (REMOVEFAILURE) to incompatible type.", tov)
 end
 subroutine mockRemove(fileLocation)
   declare removeFailure = i4 with protect, noconstant(0)
   declare fileCount = i4 with protect, noconstant(1 + size(filesToRemove->item, 5))
-    
+
   set cclut::stat = alterlist(filesToRemove->item, fileCount)
   set filesToRemove->item[fileCount].location = fileLocation
-  
+
   if (fileLocation = concat(cclut::outputDirectory, cclut::testCaseListingName))
     set removeFailure = "remove failure"
     return(FALSE)
@@ -1029,8 +1031,8 @@ end ;;;testPostExecutionFailure
 subroutine testErrorThenExitScript(null)
   set ucetcf_request->testCaseFileName = "ut_cclut_error_then_exit_script"
 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
 
@@ -1038,7 +1040,7 @@ subroutine testErrorThenExitScript(null)
   call cclutAssertI4Equal(CURREF, "test count", size(ucetcf_testCaseResults->tests, 5), 2)
   call cclutAssertVcEqual(CURREF, "setupOnce name", ucetcf_testCaseResults->tests[1].name, "SETUPONCE")
   call cclutAssertI4Equal(CURREF, "setupOnce assert count", size(ucetcf_testCaseResults->tests[1].asserts, 5), 1)
-  call cclutAssertVcEqual(CURREF, 
+  call cclutAssertVcEqual(CURREF,
       "setupOnce assert context", ucetcf_testCaseResults->tests[1].asserts[1].context, "setupOnce - guaranteed success")
   call cclutAssertI4Equal(CURREF, "setupOnce error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0);
 
@@ -1055,16 +1057,16 @@ end ;;;testErrorThenExitScript
 */
 subroutine testCoverageExcludes(null)
   declare stat = i4 with protect, noconstant(0)
-  
+
   if (currev > 8 or (currev = 8 and currevminor > 12))
     declare debugAvailable = i4 with protect, noconstant(0)
     declare previousDebugTrace = i4 with protect, noconstant(0)
     declare outputLine = vc with protect, noconstant("")
 
     select into cclut_check_debug from dummyt detail
-      outputLine = "drop program cclut_check_debug go" 
+      outputLine = "drop program cclut_check_debug go"
       outputLine row+1
-      outputLine = "create program cclut_check_debug" 
+      outputLine = "create program cclut_check_debug"
       outputLine row+1
       outputLine = "set debugAvailable = evaluate(trace('DEBUG'),1,1,0)"
       outputLine row+1
@@ -1080,35 +1082,34 @@ subroutine testCoverageExcludes(null)
       outputLine row+1
       outputLine = "endif"
       outputLine row+1
-      outputLine = "end go" 
+      outputLine = "end go"
       outputLine row+1
     with nocounter
     call compile("cclut_check_debug.dat")
     execute cclut_check_debug
     call parser ("drop program cclut_check_debug go")
     set stat = remove("cclut_check_debug.dat")
-    set stat = 
+    set stat =
         cclutAssertI4Equal(CURREF, "cclora_dbg required for code coverage since CCL version 8.13.0", debugAvailable, TRUE)
     if (stat = FALSE)
       return (null)
     endif
-  endif 
+  endif
 
   declare coverageXml = vc with protect, noconstant("")
-  
-  set stat = copyrec(ucetcf_request, tce_request)  
-  set stat = copyrec(ucetcf_reply, tce_reply)  
+
+  set stat = copyrec(ucetcf_request, tce_request)
+  set stat = copyrec(ucetcf_reply, tce_reply)
   set stat = copyrec(ucetcf_testCaseResults, tce_testCaseResults)
 
-  
   set tce_request->testCaseDirectory = "cclsource"
   set tce_request->testCaseFileName = "ut_ex_ut_cclut_cc_exclusions"
   set stat = alterlist(tce_request->programs, 1)
   set tce_request->programs[1].programName = "ut_cclut_cc_exclusions"
   set tce_request->programs[1].compile = TRUE
-  
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", tce_request), 
+
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", tce_request),
       replace("CCLUTREPLY", tce_reply),
       replace("CCLUTTESTCASERESULTS", tce_testCaseResults)
   call cclutAssertVcNotEqual(CURREF, "expected non-empty listingXml", tce_reply->programs[1].listingXml, "")
@@ -1121,13 +1122,12 @@ subroutine testCoverageExcludes(null)
   call cclutAssertContains(CURREF, "expect 46 non-executable", "<LINE><NBR>46</NBR><TYPE>N</TYPE></LINE>", coverageXml)
   call cclutAssertContains(CURREF, "expect 47 non-executable", "<LINE><NBR>47</NBR><TYPE>N</TYPE></LINE>", coverageXml)
   call cclutAssertContains(CURREF, "expect 48 non-executable", "<LINE><NBR>48</NBR><TYPE>N</TYPE></LINE>", coverageXml)
-  
-  
+
   set stat = initrec(tce_reply)
   set stat = initrec(tce_testCaseResults)
   set tce_request->programs[1].compile = FALSE
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", tce_request), 
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", tce_request),
       replace("CCLUTREPLY", tce_reply),
       replace("CCLUTTESTCASERESULTS", tce_testCaseResults)
   call cclutAssertVcEqual(CURREF, "expected empty listingXml", tce_reply->programs[1].listingXml, "")
@@ -1204,12 +1204,12 @@ subroutine testDefaultsNotFailFast(null)
   set ucetcf_request->testCaseDirectory = "cclsource"
   set ucetcf_request->testCaseFileName = "ut_cclut_suo_su_td_tdo"
 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request), 
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
-  ;that's it. 
+
+  ;that's it.
   ;if cclut_execute_test_case_file requires the value to be set an error would occur.
   ;the remaining checks confirm it did not fail fast
 
@@ -1228,7 +1228,7 @@ subroutine checkFailFast(checkFunction)
   declare errorCount = i4 with protect, noconstant(0)
   declare context = vc with protect, noconstant("")
   declare idx = i4 with protect, noconstant(0)
-  
+
   set stat = copyRec(ucetcf_request, ucetcf_request1, 1)
   call cclutAssertI4Equal(CURREF, "validate copyRec", stat, TRUE)
   if (validate(cclut_request) = TRUE)
@@ -1237,11 +1237,11 @@ subroutine checkFailFast(checkFunction)
   endif
   set ucetcf_request1->failFast = TRUE
 
-  execute cclut_execute_test_case_file with 
-      replace("CCLUTREQUEST", ucetcf_request1), 
+  execute cclut_execute_test_case_file with
+      replace("CCLUTREQUEST", ucetcf_request1),
       replace("CCLUTREPLY", ucetcf_reply),
       replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults)
-      
+
   call cclutAssertVCEqual(CURREF, "execute success 1", ucetcf_reply->status_data.status, "S")
   call cclutAssertI2Equal(CURREF, "test case failure", ucetcf_testCaseResults->resultInd, FALSE)
   set testCount = size(ucetcf_testCaseResults->tests, 5)

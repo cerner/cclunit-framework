@@ -516,7 +516,7 @@ subroutine (PUBLIC::getExcludedIncludeList(sourceFileLocation = vc, excludedIncl
                     ; The include should be excluded, so add it to the list
                     set excludeCount = excludeCount + 1
                     set cclStat = alterlist(excludedIncludes->exclude, excludeCount)
-                    set excludedIncludes->exclude[excludeCount].str = currentLine
+                    set excludedIncludes->exclude[excludeCount].str = trim(currentLine)
                 endif
             endif
 

@@ -28,6 +28,13 @@ declare cclutEPWM_group1_tdb::cclutGetCurrentGroup(null) = i4
 declare cclut::internalSubroutine(null) = null with protect
 declare cclut::mockSubroutine(null) = null with protect
 
+subroutine setupOnce(null)
+    if (reqinfo->updt_id = 0.0)
+        call cclutAssertI2Equal(CURREF, "authentication required to run this test case", TRUE, FALSE)
+        go to exit_script
+    endif
+end ;setupOnce
+
 subroutine tearDown(null)
     call cclutRemoveAllMocks(null)
     rollback
@@ -436,7 +443,7 @@ end ;execute_mocks_happy_validations
 /**
     Confirms that mock tables get dropped for a group1 user.
 
-    Note that in conjuction with test_mock_tables_dropped_via_tdbexecute_for_group1_user this test demonstrates that the
+    Note that in conjunction with test_mock_tables_dropped_via_tdbexecute_for_group1_user this test demonstrates that the
     tdbexecute call gets performed successfully.
 */
 subroutine test_mock_tables_dropped_for_group1_user(null)
@@ -591,14 +598,14 @@ subroutine cclutEPWM_group1_tdb_error::execute_mocks_happy_validations(null)
 end ;execute_mocks_happy_validations
 subroutine cclutEPWM_group1_tdb_error::postProcess(null)
     declare idx = i4 with protect, noconstant(0)
-    call cclutAssertI4Equal(CURREF, "cclutEPWM_group1_tdb_error error count", size(ucetcf_testCaseResults->tests[1]->errors, 5), 12)
+    call cclutAssertI4Equal(CURREF, "cclutEPWM_group1_tdb_error error count", size(ucetcf_testCaseResults->tests[2]->errors, 5), 12)
 
     for (idx = 1 to 11 by 2)
-        call cclutAssertVcOperator(CURREF, "tdbexecute failure", ucetcf_testCaseResults->tests[1]->errors[idx].errorText,
+        call cclutAssertVcOperator(CURREF, "tdbexecute failure", ucetcf_testCaseResults->tests[2]->errors[idx].errorText,
             "regexplike", "TDBEXECUTE error \(status = [0-9]+\)")
     endfor
     for (idx = 2 to 12 by 2)
-        call cclutAssertVcOperator(CURREF, "tdbexecute failure message", ucetcf_testCaseResults->tests[1]->errors[idx].errorText,
+        call cclutAssertVcOperator(CURREF, "tdbexecute failure message", ucetcf_testCaseResults->tests[2]->errors[idx].errorText,
             "regexplike", concat("cclutRemoveMockTable\([A-Z_]+\) - Unable to drop table.  ",
             "Manual cleanup may be required.  Mock table name is CUST_CCLUT.[A-Z_0-9]+"))
     endfor
@@ -636,14 +643,14 @@ end ;execute_mocks_happy_validations
 subroutine cclutEPWM_group1_vrp_fail::postProcess(null)
     declare idx = i4 with protect, noconstant(0)
     call cclutAssertI4Equal(CURREF,
-        "test_run_program_fails_during_group1_user_table_drop", size(ucetcf_testCaseResults->tests[1]->errors, 5), 12)
+        "test_run_program_fails_during_group1_user_table_drop", size(ucetcf_testCaseResults->tests[2]->errors, 5), 12)
 
     for (idx = 1 to 11 by 2)
-        call cclutAssertVcEqual(CURREF, "vrp failure", ucetcf_testCaseResults->tests[1]->errors[idx].errorText,
+        call cclutAssertVcEqual(CURREF, "vrp failure", ucetcf_testCaseResults->tests[2]->errors[idx].errorText,
             "VCCL_RUN_PROGRAM failure.")
     endfor
     for (idx = 2 to 12 by 2)
-        call cclutAssertVcOperator(CURREF, "tdbexecute failure message", ucetcf_testCaseResults->tests[1]->errors[idx].errorText,
+        call cclutAssertVcOperator(CURREF, "tdbexecute failure message", ucetcf_testCaseResults->tests[2]->errors[idx].errorText,
             "regexplike", concat("cclutRemoveMockTable\([A-Z_]+\) - Unable to drop table.  ",
             "Manual cleanup may be required.  Mock table name is CUST_CCLUT.[A-Z_0-9]+"))
     endfor
@@ -682,14 +689,14 @@ end ;execute_mocks_happy_validations
 subroutine cclutEPWM_group1_script_fail::postProcess(null)
     declare idx = i4 with protect, noconstant(0)
     call cclutAssertI4Equal(CURREF,
-        "test_script_fails_during_group1_user_table_drop", size(ucetcf_testCaseResults->tests[1]->errors, 5), 12)
+        "test_script_fails_during_group1_user_table_drop", size(ucetcf_testCaseResults->tests[2]->errors, 5), 12)
 
     for (idx = 1 to 11 by 2)
-        call cclutAssertVcEqual(CURREF, "script failure", ucetcf_testCaseResults->tests[1]->errors[idx].errorText,
+        call cclutAssertVcEqual(CURREF, "script failure", ucetcf_testCaseResults->tests[2]->errors[idx].errorText,
             "table not found")
     endfor
     for (idx = 2 to 12 by 2)
-        call cclutAssertVcOperator(CURREF, "tdbexecute failure message", ucetcf_testCaseResults->tests[1]->errors[idx].errorText,
+        call cclutAssertVcOperator(CURREF, "tdbexecute failure message", ucetcf_testCaseResults->tests[2]->errors[idx].errorText,
             "regexplike", concat("cclutRemoveMockTable\([A-Z_]+\) - Unable to drop table.  ",
             "Manual cleanup may be required.  Mock table name is CUST_CCLUT.[A-Z_0-9]+"))
     endfor
@@ -839,49 +846,49 @@ subroutine table_replace_version(null)
         replace("CCLUTTESTCASERESULTS", ucetcf_testCaseResults, 0),
         curnamespace = testNameSpace
 
-    call cclutAssertI2Equal(CURREF, "test count", size(ucetcf_testCaseResults->tests, 5), 1)
-    call cclutAssertI2Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[1].asserts, 5), 2)
+    call cclutAssertI2Equal(CURREF, "test count", size(ucetcf_testCaseResults->tests, 5), 2)
+    call cclutAssertI2Equal(CURREF, "assert count", size(ucetcf_testCaseResults->tests[2].asserts, 5), 2)
     call cclutAssertVcEqual(CURREF, "assert context 1",
-        ucetcf_testCaseResults->tests[1].asserts[1].context, concat(testNameSpace, " parser"))
-    call cclutAssertVcEqual(CURREF, "assert context 2", ucetcf_testCaseResults->tests[1].asserts[2].context, "expected value")
+        ucetcf_testCaseResults->tests[2].asserts[1].context, concat(testNameSpace, " parser"))
+    call cclutAssertVcEqual(CURREF, "assert context 2", ucetcf_testCaseResults->tests[2].asserts[2].context, "expected value")
     call cclutAssertStartsWith(CURREF, "assert condition 1",
         ~operator('execute UT_CCLUT_TABLE_COLUMN_NAME with replace("SAMPLE_TABLE", CUST_CCLUT_~,
-        ucetcf_testCaseResults->tests[1].asserts[1].condition)
-    call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[1].asserts[1].resultInd, TRUE)
+        ucetcf_testCaseResults->tests[2].asserts[1].condition)
+    call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[2].asserts[1].resultInd, TRUE)
 
     case(testver)
       of 81499:
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 1)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 1)
         call cclutAssertVcEqual(CURREF, "assert success 1",
-            ucetcf_testCaseResults->tests[1].asserts[2].condition, ~"" = "sample_value"~)
-        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[1].asserts[2].resultInd, FALSE)
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 1)
-        call cclutAssertVcOperator(CURREF, "error message", ucetcf_testCaseResults->tests[1].errors[1].errorText ,"regexplike",
+            ucetcf_testCaseResults->tests[2].asserts[2].condition, ~"" = "sample_value"~)
+        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[2].asserts[2].resultInd, FALSE)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 1)
+        call cclutAssertVcOperator(CURREF, "error message", ucetcf_testCaseResults->tests[2].errors[1].errorText ,"regexplike",
             concat("%CCL-E-26-UT_CCLUT_TABLE_COLUMN_NAME\([^)]+\)[0-9]+:[0-9]+\{ST.",
                 cclut_testRecord->tableName, "}The attribute \(", cclut_testRecord->tableName,
                 "\) does not exist in the table \(ST\)."))
       of 81500:
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 0)
         call cclutAssertVcEqual(CURREF, "assert success 1",
-            ucetcf_testCaseResults->tests[1].asserts[2].condition, ~"sample_value" = "sample_value"~)
-        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[1].asserts[2].resultInd, TRUE)
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0)
+            ucetcf_testCaseResults->tests[2].asserts[2].condition, ~"sample_value" = "sample_value"~)
+        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[2].asserts[2].resultInd, TRUE)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 0)
       of 90299:
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 1)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 1)
         call cclutAssertVcEqual(CURREF, "assert success 1",
-            ucetcf_testCaseResults->tests[1].asserts[2].condition, ~"" = "sample_value"~)
-        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[1].asserts[2].resultInd, FALSE)
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 1)
-        call cclutAssertVcOperator(CURREF, "error message", ucetcf_testCaseResults->tests[1].errors[1].errorText ,"regexplike",
+            ucetcf_testCaseResults->tests[2].asserts[2].condition, ~"" = "sample_value"~)
+        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[2].asserts[2].resultInd, FALSE)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 1)
+        call cclutAssertVcOperator(CURREF, "error message", ucetcf_testCaseResults->tests[2].errors[1].errorText ,"regexplike",
             concat("%CCL-E-26-UT_CCLUT_TABLE_COLUMN_NAME\([^)]+\)[0-9]+:[0-9]+\{ST.",
                 cclut_testRecord->tableName, "}The attribute \(", cclut_testRecord->tableName,
                 "\) does not exist in the table \(ST\)."))
       of 90300:
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 0)
         call cclutAssertVcEqual(CURREF, "assert success 1",
-            ucetcf_testCaseResults->tests[1].asserts[2].condition, ~"sample_value" = "sample_value"~)
-        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[1].asserts[2].resultInd, TRUE)
-        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1].errors, 5), 0)
+            ucetcf_testCaseResults->tests[2].asserts[2].condition, ~"sample_value" = "sample_value"~)
+        call cclutAssertI2Equal(CURREF, "assert success 1", ucetcf_testCaseResults->tests[2].asserts[2].resultInd, TRUE)
+        call cclutAssertI2Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2].errors, 5), 0)
       else
         call cclutAssertI2Equal(CURREF, "unexpected testver", TRUE, FALSE)
     endcase
@@ -952,12 +959,12 @@ subroutine cclutEPWM_errors::execute_mocks_happy_validations(null)
   null
 end ;execute_mocks_happy_validations
 subroutine cclutEPWM_errors::postProcess(null)
-    call cclutAssertI4Equal(CURREF, "test count", size(ucetcf_testCaseResults->tests, 5), 1)
-    call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[1]->errors, 5), 3)
+    call cclutAssertI4Equal(CURREF, "test count", size(ucetcf_testCaseResults->tests, 5), 2)
+    call cclutAssertI4Equal(CURREF, "error count", size(ucetcf_testCaseResults->tests[2]->errors, 5), 3)
     call cclutAssertContains(
-        CURREF, "error message one", "Exception(557): forced CCL error.", ucetcf_testCaseResults->tests[1]->errors[1].errorText)
+        CURREF, "error message one", "Exception(557): forced CCL error.", ucetcf_testCaseResults->tests[2]->errors[1].errorText)
     call cclutAssertContains(
-        CURREF, "error message two", "Exception(556): forced CCL error.", ucetcf_testCaseResults->tests[1]->errors[2].errorText)
+        CURREF, "error message two", "Exception(556): forced CCL error.", ucetcf_testCaseResults->tests[2]->errors[2].errorText)
     call cclutAssertContains(
-        CURREF, "error message three", "Exception(555): forced CCL error.", ucetcf_testCaseResults->tests[1]->errors[3].errorText)
+        CURREF, "error message three", "Exception(555): forced CCL error.", ucetcf_testCaseResults->tests[2]->errors[3].errorText)
 end ;test_cclutExecuteProgramWithMocks_happy::unitTestSpecificValidations

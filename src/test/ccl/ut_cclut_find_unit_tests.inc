@@ -63,7 +63,7 @@ subroutine testItB(null)
   execute cclut_find_unit_tests with replace("CCLUTREQUEST", request), replace("CCLUTREPLY", reply), replace("PARSER", mockParser)
 
   call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.status, "F")
-  call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].operationName, "TRANSLATE")
+  call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].operationName, "TRANSLATE                ")
   call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].operationStatus, "F")
   call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].targetObjectName, 
       "ut_cclut_find_unit_tests_")
@@ -91,7 +91,7 @@ subroutine testItC(null)
   execute cclut_find_unit_tests with replace("CCLUTREQUEST", request), replace("CCLUTREPLY", reply), replace("PARSER", mockParser)
 
   call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.status, "F")
-  call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].operationName, "PARSE")
+  call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].operationName, "PARSE                    ")
   call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].operationStatus, "F")
   call cclutAssertVCEqual(CURREF, "expect failure", reply->status_data.subeventstatus[1].targetObjectName, 
       "ut_cclut_find_unit_tests_")

@@ -7,6 +7,8 @@
 
 %i cclsource:cclut_get_file_as_string.inc
 
+declare NULL_MARKER = vc with protect, constant(char(128))
+
 declare testing::checkLines(lines = vc(ref)) = null with protect
 declare testSuccessOfF8EqualAssert(null) = null with protect
 declare testSuccessOfI4EqualAssert(null) = null with protect
@@ -58,6 +60,7 @@ declare testSuccessOfDateTimeOperatorAssert(null) = null with protect
 declare testSuccessOfDateTimeNotOperatorAssert(null) = null with protect
 declare testAssertFailures(null) = null with protect
 declare testParameterNameConflicts(null) = null with protect
+declare testStringLogicOverride(null) = null with protect
 
 
 declare testing::ASSERT_TYPE_EQUAL = i4 with protect, constant(0)
@@ -165,6 +168,7 @@ subroutine testSuccessOfDateTimeEqualAssert(null)
   set actual = cnvtdatetime(curdate, 0)
   set assertReturn = cclutAssertDateTimeEqual(CURREF, "Test Assert 5", expected, actual)
   call cclutAssertI2Equal(CURREF, "Test Assert Return Value 5", TRUE, assertReturn)
+
 end ;testSuccessOfDateTimeEqualAssert
 
 
@@ -308,6 +312,17 @@ subroutine testSuccessOfVCLessThanAssert(null)
   set value2 = "Super"
   set assertReturn = cclutAssertVCLessThan(CURREF, "Test Assert 16", value1, value2)
   call cclutAssertI2Equal(CURREF, "Test Assert Return Value 16", TRUE, assertReturn)
+
+  set value1 = "hw"
+  set value2 = notrim("hw ")
+  set assertReturn = cclutAssertVCLessThan(CURREF, "Test Assert 16a", value1, notrim(value2))
+  call cclutAssertI2Equal(CURREF, "Test Assert Return Value 16a", TRUE, assertReturn)
+
+  set assertReturn = cclutAssertVCLessThan(CURREF, "Test Assert 16b", trim(""), "")
+  call cclutAssertI2Equal(CURREF, "Test Assert Return Value 16b", TRUE, assertReturn)
+
+  set assertReturn = cclutAssertVCLessThan(CURREF, "Test Assert 16c", "", " ")
+  call cclutAssertI2Equal(CURREF, "Test Assert Return Value 16c", TRUE, assertReturn)
 end ;testSuccessOfVCLessThanAssert
 
 subroutine testSuccessOfDateTimeLessThanAssert(null)
@@ -383,10 +398,10 @@ subroutine testSuccessOfVCNotLessThanAssert(null)
   set assertReturn = cclutAssertVCNotLessThan(CURREF, "Test Assert 24", value1, value2)
   call cclutAssertI2Equal(CURREF, "Test Assert Return Value 24", TRUE, assertReturn)
   
-  set value1 = notrim("Good  ")
+  set value1 = notrim("Good ")
   set value2 = "Good"
   set assertReturn = cclutAssertVCNotLessThan(CURREF, "Test Assert 25", notrim(value1), value2)
-  call cclutAssertI2Equal(CURREF, "Space padded strings are equal to their non-padded strings", TRUE, assertReturn)
+  call cclutAssertI2Equal(CURREF, "A space padded strings is not less than the non-padded string", TRUE, assertReturn)
 end ;testSuccessOfVCNotLessThanAssert
 
 subroutine testSuccessOfDateTimeNotLessThanAssert(null)
@@ -451,6 +466,17 @@ subroutine testSuccessOfVCGreaterThanAssert(null)
   set value2 = "Super"
   set assertReturn = cclutAssertVCGreaterThan(CURREF, "Test Assert 31", value1, value2)
   call cclutAssertI2Equal(CURREF, "Test Assert Return Value 31", TRUE, assertReturn)
+
+  set value1 = notrim("hw ")
+  set value2 = "hw"
+  set assertReturn = cclutAssertVCGreaterThan(CURREF, "Test Assert 31a", notrim(value1), value2)
+  call cclutAssertI2Equal(CURREF, "Test Assert Return Value 31a", TRUE, assertReturn)
+
+  set assertReturn = cclutAssertVCGreaterThan(CURREF, "Test Assert 31b", " ", "")
+  call cclutAssertI2Equal(CURREF, "Test Assert Return Value 31b", TRUE, assertReturn)
+
+  set assertReturn = cclutAssertVCGreaterThan(CURREF, "Test Assert 31c", "", trim(" "))
+  call cclutAssertI2Equal(CURREF, "Test Assert Return Value 31c", TRUE, assertReturn)
 end ;testSuccessOfVCGreaterThanAssert
 
 subroutine testSuccessOfDateTimeGreaterThanAssert(null)
@@ -527,9 +553,9 @@ subroutine testSuccessOfVCNotGreaterThanAssert(null)
   call cclutAssertI2Equal(CURREF, "Test Assert Return Value 39", TRUE, assertReturn)
   
   set value1 = "Good"
-  set value2 = notrim("Good   ")
+  set value2 = notrim("Good ")
   set assertReturn = cclutAssertVCNotGreaterThan(CURREF, "Test Assert 40", value1, notrim(value2))
-  call cclutAssertI2Equal(CURREF, "Space padded strings are equal to their non-padded strings", TRUE, assertReturn)
+  call cclutAssertI2Equal(CURREF, "A string is not greater than the string padded with spaces", TRUE, assertReturn)
 end ;testSuccessOfVCNotGreaterThanAssert
 
 subroutine testSuccessOfDateTimeNotGreaterThanAssert(null)
@@ -621,7 +647,7 @@ subroutine testSuccessOfNotEndsWithAssert(null)
   declare assertReturn = i2 with protect, noconstant(99)
   
   set subStr = " ld"
-  set bigStr = "hello world"
+  set bigStr = "hw"
   set assertReturn = cclutAssertNotEndsWith(CURREF, "Test Assert 48", subStr, bigStr)
   call cclutAssertI2Equal(CURREF, "Test Assert Return Value 48", TRUE, assertReturn)
 end ;testSuccessOfNotEndsWithAssert
@@ -733,463 +759,554 @@ subroutine testAssertFailures(null)
       2 text = vc
   ) with protect
   
-  set stat = alterlist(testing::outputLines->line, 250)
+  set stat = alterlist(testing::outputLines->line, 297)
   set testing::outputLines->line[1].text = equals
   set testing::outputLines->line[2].type = testing::ASSERT_TYPE_DATE
-  set testing::outputLines->line[2].text = 
+  set testing::outputLines->line[2].text =
     ^                                                  CCL Unit Test Report                           ^
-  set testing::outputLines->line[3].text = 
-    ^^
-  set testing::outputLines->line[4].text = 
+  set testing::outputLines->line[3].text =
+    ^ ^
+  set testing::outputLines->line[4].text =
     ^Test Case: cclsource:ut_cclut_assert_failure^
-  set testing::outputLines->line[5].text = 
-    ^passed: 0           FAILED: 48          errored: 0^
-  set testing::outputLines->line[6].text = 
-    ^^
-  set testing::outputLines->line[7].text = 
-    ^^
-  set testing::outputLines->line[8].text = 
+  set testing::outputLines->line[5].text =
+    ^passed: 0           FAILED: 49          errored: 0^
+  set testing::outputLines->line[6].text =
+    ^ ^
+  set testing::outputLines->line[7].text =
+    ^ ^
+  set testing::outputLines->line[8].text =
     ^Failed Tests^
   set testing::outputLines->line[9].text = equals
-  set testing::outputLines->line[10].text = 
+  set testing::outputLines->line[10].text =
     ^TESTFAILUREOFF8EQUALASSERT^
   set testing::outputLines->line[11].text = dashes
-  set testing::outputLines->line[12].text = 
+  set testing::outputLines->line[12].text =
     ^    Assert Failure: 6.700000 = 2.400000^
   set testing::outputLines->line[13].text =
     ^    Test Assert Failure 1^ 
-  set testing::outputLines->line[14].text = 
-    ^^
-  set testing::outputLines->line[15].text = 
+  set testing::outputLines->line[14].text =
+    ^ ^
+  set testing::outputLines->line[15].text =
     ^TESTFAILUREOFI4EQUALASSERT^
   set testing::outputLines->line[16].text = dashes
-  set testing::outputLines->line[17].text = 
+  set testing::outputLines->line[17].text =
     ^    Assert Failure: 9827 = 243^
-  set testing::outputLines->line[18].text = 
-    ^    Test Assert Failure 2^ 
-  set testing::outputLines->line[19].text = 
-    ^^
-  set testing::outputLines->line[20].text = 
+  set testing::outputLines->line[18].text =
+    ^    Test Assert Failure 2^
+  set testing::outputLines->line[19].text =
+    ^ ^
+  set testing::outputLines->line[20].text =
     ^TESTFAILUREOFI2EQUALASSERT^
   set testing::outputLines->line[21].text = dashes
-  set testing::outputLines->line[22].text = 
+  set testing::outputLines->line[22].text =
     ^    Assert Failure: 1 = 0^
-  set testing::outputLines->line[23].text = 
-    ^    Test Assert Failure 3^ 
-  set testing::outputLines->line[24].text = 
-    ^^
-  set testing::outputLines->line[25].text = 
+  set testing::outputLines->line[23].text =
+    ^    Test Assert Failure 3^
+  set testing::outputLines->line[24].text =
+    ^ ^
+  set testing::outputLines->line[25].text =
     ^TESTFAILUREOFVCEQUALASSERT^
   set testing::outputLines->line[26].text = dashes
-  set testing::outputLines->line[27].text = 
+  set testing::outputLines->line[27].text =
     ^    Assert Failure: "Fantastic" = "Terrible"^
-  set testing::outputLines->line[28].text = 
-    ^    Test Assert Failure 4^ 
-  set testing::outputLines->line[29].text = 
-    ^^
-  set testing::outputLines->line[30].text = 
+  set testing::outputLines->line[28].text =
+    ^    Test Assert Failure 4^
+  set testing::outputLines->line[29].text = dashes
+  set testing::outputLines->line[30].text =
+    concat(^    Assert Failure: "^, NULL_MARKER, ^" = " "^)
+  set testing::outputLines->line[31].text =
+    ^    Test Assert Failure 4a^
+  set testing::outputLines->line[32].text = dashes
+  set testing::outputLines->line[33].text =
+    concat(^    Assert Failure: "^, NULL_MARKER, ^" = " "^)
+  set testing::outputLines->line[34].text =
+    ^    Test Assert Failure 4b^
+  set testing::outputLines->line[35].text = dashes
+  set testing::outputLines->line[36].text =
+    concat(^    Assert Failure: "^, NULL_MARKER, ^" = ""^)
+  set testing::outputLines->line[37].text =
+    ^    Test Assert Failure 4c^
+  set testing::outputLines->line[38].text = dashes
+  set testing::outputLines->line[39].text =
+    ^    Assert Failure: "hw" = "hw "^
+  set testing::outputLines->line[40].text =
+    ^    Test Assert Failure 4d^
+  set testing::outputLines->line[41].text =
+    ^ ^
+  set testing::outputLines->line[42].text =
     ^TESTFAILUREOFDATETIMEEQUALASSERT^
-  set testing::outputLines->line[31].text = dashes
-  set testing::outputLines->line[32].text = 
+  set testing::outputLines->line[43].text = dashes
+  set testing::outputLines->line[44].text =
     ^    Assert Failure: '2017-11-30 15:55:00' = '2001-01-01 00:01:02'^
-  set testing::outputLines->line[33].text = 
-    ^    Test Assert Failure 5^ 
-  set testing::outputLines->line[34].text = 
-    ^^
-  set testing::outputLines->line[35].text = 
+  set testing::outputLines->line[45].text =
+    ^    Test Assert Failure 5^
+  set testing::outputLines->line[46].text =
+    ^ ^
+  set testing::outputLines->line[47].text =
     ^TESTFAILUREOFF8ALMOSTEQUALASSERT^
-  set testing::outputLines->line[36].text = dashes
-  set testing::outputLines->line[37].text = 
+  set testing::outputLines->line[48].text = dashes
+  set testing::outputLines->line[49].text =
     ^    Assert Failure: abs(2.600000-2.400000) <= 0.030000^
-  set testing::outputLines->line[38].text = 
-    ^    Test Assert Failure 6^ 
-  set testing::outputLines->line[39].text = 
-    ^^
-  set testing::outputLines->line[40].text = 
+  set testing::outputLines->line[50].text =
+    ^    Test Assert Failure 6^
+  set testing::outputLines->line[51].text =
+    ^ ^
+  set testing::outputLines->line[52].text =
     ^TESTFAILUREOFF8NOTALMOSTEQUALASSERT^
-  set testing::outputLines->line[41].text = dashes
-  set testing::outputLines->line[42].text = 
+  set testing::outputLines->line[53].text = dashes
+  set testing::outputLines->line[54].text =
     ^    Assert Failure: abs(2.880000-2.900000) > 0.050000^
-  set testing::outputLines->line[43].text = 
-    ^    Test Assert Failure 7^ 
-  set testing::outputLines->line[44].text = 
-    ^^
-  set testing::outputLines->line[45].text = 
+  set testing::outputLines->line[55].text =
+    ^    Test Assert Failure 7^
+  set testing::outputLines->line[56].text =
+    ^ ^
+  set testing::outputLines->line[57].text =
     ^TESTFAILUREOFF8NOTEQUALASSERT^
-  set testing::outputLines->line[46].text = dashes
-  set testing::outputLines->line[47].text = 
+  set testing::outputLines->line[58].text = dashes
+  set testing::outputLines->line[59].text =
     ^    Assert Failure: 6.700000 != 6.700000^
-  set testing::outputLines->line[48].text = 
-    ^    Test Assert Failure 8^ 
-  set testing::outputLines->line[49].text = 
-    ^^
-  set testing::outputLines->line[50].text = 
+  set testing::outputLines->line[60].text =
+    ^    Test Assert Failure 8^
+  set testing::outputLines->line[61].text =
+    ^ ^
+  set testing::outputLines->line[62].text =
     ^TESTFAILUREOFI4NOTEQUALASSERT^
-  set testing::outputLines->line[51].text = dashes
-  set testing::outputLines->line[52].text = 
+  set testing::outputLines->line[63].text = dashes
+  set testing::outputLines->line[64].text =
     ^    Assert Failure: 9827 != 9827^
-  set testing::outputLines->line[53].text = 
-    ^    Test Assert Failure 9^ 
-  set testing::outputLines->line[54].text = 
-    ^^
-  set testing::outputLines->line[55].text = 
+  set testing::outputLines->line[65].text =
+    ^    Test Assert Failure 9^
+  set testing::outputLines->line[66].text =
+    ^ ^
+  set testing::outputLines->line[67].text =
     ^TESTFAILUREOFI2NOTEQUALASSERT^
-  set testing::outputLines->line[56].text = dashes
-  set testing::outputLines->line[57].text = 
+  set testing::outputLines->line[68].text = dashes
+  set testing::outputLines->line[69].text =
     ^    Assert Failure: 12 != 12^
-  set testing::outputLines->line[58].text = 
-    ^    Test Assert Failure 10^ 
-  set testing::outputLines->line[59].text = 
-    ^^
-  set testing::outputLines->line[60].text = 
+  set testing::outputLines->line[70].text =
+    ^    Test Assert Failure 10^
+  set testing::outputLines->line[71].text =
+    ^ ^
+  set testing::outputLines->line[72].text =
     ^TESTFAILUREOFVCNOTEQUALASSERT^
-  set testing::outputLines->line[61].text = dashes
-  set testing::outputLines->line[62].text = 
+  set testing::outputLines->line[73].text = dashes
+  set testing::outputLines->line[74].text =
     ^    Assert Failure: "Fantastic   " != "Fantastic"^
-  set testing::outputLines->line[63].text = 
-    ^    Test Assert Failure 11^ 
-  set testing::outputLines->line[64].text = 
-    ^^
-  set testing::outputLines->line[65].text = 
+  set testing::outputLines->line[75].text =
+    ^    Test Assert Failure 11^
+  set testing::outputLines->line[76].text =
+    ^ ^
+  set testing::outputLines->line[77].text =
     ^TESTFAILUREOFDATETIMENOTEQUALASSERT^
-  set testing::outputLines->line[66].text = dashes
-  set testing::outputLines->line[67].type = testing::ASSERT_TYPE_MATCH
-  set testing::outputLines->line[67].text = concat(
+  set testing::outputLines->line[78].text = dashes
+  set testing::outputLines->line[79].type = testing::ASSERT_TYPE_MATCH
+  set testing::outputLines->line[79].text = concat(
     ^    Assert Failure: '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}' != ^,
     ^'[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'^)
-  set testing::outputLines->line[68].text = 
-    ^    Test Assert Failure 12^ 
-  set testing::outputLines->line[69].text = 
-    ^^
-  set testing::outputLines->line[70].text = 
+  set testing::outputLines->line[80].text =
+    ^    Test Assert Failure 12^
+  set testing::outputLines->line[81].text =
+    ^ ^
+  set testing::outputLines->line[82].text =
     ^TESTFAILUREOFF8LESSTHANASSERT^
-  set testing::outputLines->line[71].text = dashes
-  set testing::outputLines->line[72].text = 
+  set testing::outputLines->line[83].text = dashes
+  set testing::outputLines->line[84].text =
     ^    Assert Failure: 2.400000 < 2.400000^
-  set testing::outputLines->line[73].text = 
-    ^    Test Assert Failure 13^ 
-  set testing::outputLines->line[74].text = 
-    ^^
-  set testing::outputLines->line[75].text = 
+  set testing::outputLines->line[85].text =
+    ^    Test Assert Failure 13^
+  set testing::outputLines->line[86].text =
+    ^ ^
+  set testing::outputLines->line[87].text =
     ^TESTFAILUREOFI4LESSTHANASSERT^
-  set testing::outputLines->line[76].text = dashes
-  set testing::outputLines->line[77].text = 
+  set testing::outputLines->line[88].text = dashes
+  set testing::outputLines->line[89].text =
     ^    Assert Failure: 827 < 243^
-  set testing::outputLines->line[78].text = 
-    ^    Test Assert Failure 14^ 
-  set testing::outputLines->line[79].text = 
-    ^^
-  set testing::outputLines->line[80].text = 
+  set testing::outputLines->line[90].text =
+    ^    Test Assert Failure 14^
+  set testing::outputLines->line[91].text =
+    ^ ^
+  set testing::outputLines->line[92].text =
     ^TESTFAILUREOFI2LESSTHANASSERT^
-  set testing::outputLines->line[81].text = dashes
-  set testing::outputLines->line[82].text = 
+  set testing::outputLines->line[93].text = dashes
+  set testing::outputLines->line[94].text =
     ^    Assert Failure: 57 < 14^
-  set testing::outputLines->line[83].text = 
+  set testing::outputLines->line[95].text =
     ^    Test Assert Failure 15^ 
-  set testing::outputLines->line[84].text = 
-    ^^
-  set testing::outputLines->line[85].text = 
+  set testing::outputLines->line[96].text =
+    ^ ^
+  set testing::outputLines->line[97].text =
     ^TESTFAILUREOFVCLESSTHANASSERT^
-  set testing::outputLines->line[86].text = dashes
-  set testing::outputLines->line[87].text = 
+  set testing::outputLines->line[98].text = dashes
+  set testing::outputLines->line[99].text =
     ^    Assert Failure: "Wow" < "Terrible"^
-  set testing::outputLines->line[88].text = 
-    ^    Test Assert Failure 16^ 
-  set testing::outputLines->line[89].text = 
-    ^^
-  set testing::outputLines->line[90].text = 
-    ^TESTFAILUREOFDATETIMELESSTHANASSERT^
-  set testing::outputLines->line[91].text = dashes
-  set testing::outputLines->line[92].text = 
-    ^    Assert Failure: '2001-01-01 00:01:02' < '2001-01-01 00:01:02'^
-  set testing::outputLines->line[93].text = 
-    ^    Test Assert Failure 17^ 
-  set testing::outputLines->line[94].text = 
-    ^^
-  set testing::outputLines->line[95].text = 
-    ^TESTFAILUREOFF8NOTLESSTHANASSERT^
-  set testing::outputLines->line[96].text = dashes
-  set testing::outputLines->line[97].text = 
-    ^    Assert Failure: 1.700000 >= 2.400000^
-  set testing::outputLines->line[98].text = 
-    ^    Test Assert Failure 18^ 
-  set testing::outputLines->line[99].text = 
-    ^^
-  set testing::outputLines->line[100].text = 
-    ^TESTFAILUREOFI4NOTLESSTHANASSERT^
+  set testing::outputLines->line[100].text =
+    ^    Test Assert Failure 16^
   set testing::outputLines->line[101].text = dashes
-  set testing::outputLines->line[102].text = 
-    ^    Assert Failure: 127 >= 243^
-  set testing::outputLines->line[103].text = 
-    ^    Test Assert Failure 19^ 
-  set testing::outputLines->line[104].text = 
-    ^^
-  set testing::outputLines->line[105].text = 
-    ^TESTFAILUREOFI2NOTLESSTHANASSERT^
+  set testing::outputLines->line[102].text =
+    ^    Assert Failure: "hw" < "hw"^
+  set testing::outputLines->line[103].text =
+    ^    Test Assert Failure 16a^
+  set testing::outputLines->line[104].text =
+    ^ ^
+  set testing::outputLines->line[105].text =
+    ^TESTFAILUREOFDATETIMELESSTHANASSERT^
   set testing::outputLines->line[106].text = dashes
-  set testing::outputLines->line[107].text = 
-    ^    Assert Failure: 7 >= 14^
-  set testing::outputLines->line[108].text = 
-    ^    Test Assert Failure 20^ 
-  set testing::outputLines->line[109].text = 
-    ^^
-  set testing::outputLines->line[110].text = 
-    ^TESTFAILUREOFVCNOTLESSTHANASSERT^
+  set testing::outputLines->line[107].text =
+    ^    Assert Failure: '2001-01-01 00:01:02' < '2001-01-01 00:01:02'^
+  set testing::outputLines->line[108].text =
+    ^    Test Assert Failure 17^
+  set testing::outputLines->line[109].text =
+    ^ ^
+  set testing::outputLines->line[110].text =
+    ^TESTFAILUREOFF8NOTLESSTHANASSERT^
   set testing::outputLines->line[111].text = dashes
-  set testing::outputLines->line[112].text = 
-    ^    Assert Failure: "Fantastic" >= "Terrible"^
-  set testing::outputLines->line[113].text = 
-    ^    Test Assert Failure 21^ 
-  set testing::outputLines->line[114].text = 
-    ^^
-  set testing::outputLines->line[115].text = 
-    ^TESTFAILUREOFDATETIMENOTLESSTHANASSERT^
+  set testing::outputLines->line[112].text =
+    ^    Assert Failure: 1.700000 >= 2.400000^
+  set testing::outputLines->line[113].text =
+    ^    Test Assert Failure 18^
+  set testing::outputLines->line[114].text =
+    ^ ^
+  set testing::outputLines->line[115].text =
+    ^TESTFAILUREOFI4NOTLESSTHANASSERT^
   set testing::outputLines->line[116].text = dashes
-  set testing::outputLines->line[117].type = testing::ASSERT_TYPE_MATCH
-  set testing::outputLines->line[117].text = concat(
+  set testing::outputLines->line[117].text =
+    ^    Assert Failure: 127 >= 243^
+  set testing::outputLines->line[118].text =
+    ^    Test Assert Failure 19^
+  set testing::outputLines->line[119].text =
+    ^ ^
+  set testing::outputLines->line[120].text =
+    ^TESTFAILUREOFI2NOTLESSTHANASSERT^
+  set testing::outputLines->line[121].text = dashes
+  set testing::outputLines->line[122].text =
+    ^    Assert Failure: 7 >= 14^
+  set testing::outputLines->line[123].text =
+    ^    Test Assert Failure 20^
+  set testing::outputLines->line[124].text =
+    ^ ^
+  set testing::outputLines->line[125].text =
+    ^TESTFAILUREOFVCNOTLESSTHANASSERT^
+  set testing::outputLines->line[126].text = dashes
+  set testing::outputLines->line[127].text =
+    ^    Assert Failure: "Fantastic" >= "Terrible"^
+  set testing::outputLines->line[128].text =
+    ^    Test Assert Failure 21^
+  set testing::outputLines->line[129].text = dashes
+  set testing::outputLines->line[130].text =
+    ^    Assert Failure: "hw" >= "hw "^
+  set testing::outputLines->line[131].text =
+    ^    Test Assert Failure 21a^
+  set testing::outputLines->line[132].text =
+    ^ ^
+  set testing::outputLines->line[133].text =
+    ^TESTFAILUREOFDATETIMENOTLESSTHANASSERT^
+  set testing::outputLines->line[134].text = dashes
+  set testing::outputLines->line[135].type = testing::ASSERT_TYPE_MATCH
+  set testing::outputLines->line[135].text = concat(
     ^    Assert Failure: '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}' >= ^,
     ^'[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'^)
-  set testing::outputLines->line[118].text = 
-    ^    Test Assert Failure 22^ 
-  set testing::outputLines->line[119].text = 
-    ^^
-  set testing::outputLines->line[120].text = 
+  set testing::outputLines->line[136].text =
+    ^    Test Assert Failure 22^
+  set testing::outputLines->line[137].text =
+    ^ ^
+  set testing::outputLines->line[138].text =
     ^TESTFAILUREOFF8GREATERTHANASSERT^
-  set testing::outputLines->line[121].text = dashes
-  set testing::outputLines->line[122].text = 
+  set testing::outputLines->line[139].text = dashes
+  set testing::outputLines->line[140].text =
     ^    Assert Failure: 1.700000 > 2.400000^
-  set testing::outputLines->line[123].text = 
-    ^    Test Assert Failure 23^ 
-  set testing::outputLines->line[124].text = 
-    ^^
-  set testing::outputLines->line[125].text = 
+  set testing::outputLines->line[141].text =
+    ^    Test Assert Failure 23^
+  set testing::outputLines->line[142].text =
+    ^ ^
+  set testing::outputLines->line[143].text =
     ^TESTFAILUREOFI4GREATERTHANASSERT^
-  set testing::outputLines->line[126].text = dashes
-  set testing::outputLines->line[127].text = 
+  set testing::outputLines->line[144].text = dashes
+  set testing::outputLines->line[145].text =
     ^    Assert Failure: 827 > 827^
-  set testing::outputLines->line[128].text = 
-    ^    Test Assert Failure 24^ 
-  set testing::outputLines->line[129].text = 
-    ^^
-  set testing::outputLines->line[130].text = 
+  set testing::outputLines->line[146].text =
+    ^    Test Assert Failure 24^
+  set testing::outputLines->line[147].text =
+    ^ ^
+  set testing::outputLines->line[148].text =
     ^TESTFAILUREOFI2GREATERTHANASSERT^
-  set testing::outputLines->line[131].text = dashes
-  set testing::outputLines->line[132].text = 
+  set testing::outputLines->line[149].text = dashes
+  set testing::outputLines->line[150].text =
     ^    Assert Failure: 57 > 114^
-  set testing::outputLines->line[133].text = 
-    ^    Test Assert Failure 25^ 
-  set testing::outputLines->line[134].text = 
-    ^^
-  set testing::outputLines->line[135].text = 
+  set testing::outputLines->line[151].text =
+    ^    Test Assert Failure 25^
+  set testing::outputLines->line[152].text =
+    ^ ^
+  set testing::outputLines->line[153].text =
     ^TESTFAILUREOFVCGREATERTHANASSERT^
-  set testing::outputLines->line[136].text = dashes
-  set testing::outputLines->line[137].text = 
+  set testing::outputLines->line[154].text = dashes
+  set testing::outputLines->line[155].text =
     ^    Assert Failure: "Dove" > "Terrible"^
-  set testing::outputLines->line[138].text = 
-    ^    Test Assert Failure 26^ 
-  set testing::outputLines->line[139].text = 
-    ^^
-  set testing::outputLines->line[140].text = 
+  set testing::outputLines->line[156].text =
+    ^    Test Assert Failure 26^
+  set testing::outputLines->line[157].text = dashes
+  set testing::outputLines->line[158].text =
+    ^    Assert Failure: "hw" > "hw"^
+  set testing::outputLines->line[159].text =
+    ^    Test Assert Failure 26a^
+  set testing::outputLines->line[160].text =
+    ^ ^
+  set testing::outputLines->line[161].text =
     ^TESTFAILUREOFDATETIMEGREATERTHANASSERT^
-  set testing::outputLines->line[141].text = dashes
-  set testing::outputLines->line[142].text = 
+  set testing::outputLines->line[162].text = dashes
+  set testing::outputLines->line[163].text =
     ^    Assert Failure: '2001-01-01 00:01:02' > '2001-01-01 00:01:02'^
-  set testing::outputLines->line[143].text = 
-    ^    Test Assert Failure 27^ 
-  set testing::outputLines->line[144].text = 
-    ^^
-  set testing::outputLines->line[145].text = 
+  set testing::outputLines->line[164].text =
+    ^    Test Assert Failure 27^
+  set testing::outputLines->line[165].text =
+    ^ ^
+  set testing::outputLines->line[166].text =
     ^TESTFAILUREOFF8NOTGREATERTHANASSERT^
-  set testing::outputLines->line[146].text = dashes
-  set testing::outputLines->line[147].text = 
+  set testing::outputLines->line[167].text = dashes
+  set testing::outputLines->line[168].text =
     ^    Assert Failure: 981.700000 <= 2.400000^
-  set testing::outputLines->line[148].text = 
-    ^    Test Assert Failure 28^ 
-  set testing::outputLines->line[149].text = 
-    ^^
-  set testing::outputLines->line[150].text = 
+  set testing::outputLines->line[169].text =
+    ^    Test Assert Failure 28^
+  set testing::outputLines->line[170].text =
+    ^ ^
+  set testing::outputLines->line[171].text =
     ^TESTFAILUREOFI4NOTGREATERTHANASSERT^
-  set testing::outputLines->line[151].text = dashes
-  set testing::outputLines->line[152].text = 
+  set testing::outputLines->line[172].text = dashes
+  set testing::outputLines->line[173].text =
     ^    Assert Failure: 593 <= 243^
-  set testing::outputLines->line[153].text = 
-    ^    Test Assert Failure 29^ 
-  set testing::outputLines->line[154].text = 
-    ^^
-  set testing::outputLines->line[155].text = 
+  set testing::outputLines->line[174].text =
+    ^    Test Assert Failure 29^
+  set testing::outputLines->line[175].text =
+    ^ ^
+  set testing::outputLines->line[176].text =
     ^TESTFAILUREOFI2NOTGREATERTHANASSERT^
-  set testing::outputLines->line[156].text = dashes
-  set testing::outputLines->line[157].text = 
+  set testing::outputLines->line[177].text = dashes
+  set testing::outputLines->line[178].text =
     ^    Assert Failure: 87 <= 14^
-  set testing::outputLines->line[158].text = 
-    ^    Test Assert Failure 30^ 
-  set testing::outputLines->line[159].text = 
-    ^^
-  set testing::outputLines->line[160].text = 
+  set testing::outputLines->line[179].text =
+    ^    Test Assert Failure 30^
+  set testing::outputLines->line[180].text =
+    ^ ^
+  set testing::outputLines->line[181].text =
     ^TESTFAILUREOFVCNOTGREATERTHANASSERT^
-  set testing::outputLines->line[161].text = dashes
-  set testing::outputLines->line[162].text = 
+  set testing::outputLines->line[182].text = dashes
+  set testing::outputLines->line[183].text =
     ^    Assert Failure: "Wave" <= "Terrible"^
-  set testing::outputLines->line[163].text = 
-    ^    Test Assert Failure 31^ 
-  set testing::outputLines->line[164].text = 
-    ^^
-  set testing::outputLines->line[165].text = 
+  set testing::outputLines->line[184].text =
+    ^    Test Assert Failure 31^
+  set testing::outputLines->line[185].text = dashes
+  set testing::outputLines->line[186].text =
+    ^    Assert Failure: "hw " <= "hw"^
+  set testing::outputLines->line[187].text =
+    ^    Test Assert Failure 31a^
+  set testing::outputLines->line[188].text =
+    ^ ^
+  set testing::outputLines->line[189].text =
     ^TESTFAILUREOFDATETIMENOTGREATERTHANASSERT^
-  set testing::outputLines->line[166].text = dashes
-  set testing::outputLines->line[167].type = testing::ASSERT_TYPE_MATCH
-  set testing::outputLines->line[167].text = concat(
+  set testing::outputLines->line[190].text = dashes
+  set testing::outputLines->line[191].type = testing::ASSERT_TYPE_MATCH
+  set testing::outputLines->line[191].text = concat(
     ^    Assert Failure: '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}' <= ^,
     ^'[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'^)
-  set testing::outputLines->line[168].text = 
-    ^    Test Assert Failure 32^ 
-  set testing::outputLines->line[169].text = 
-    ^^
-  set testing::outputLines->line[170].text = 
+  set testing::outputLines->line[192].text =
+    ^    Test Assert Failure 32^
+  set testing::outputLines->line[193].text =
+    ^ ^
+  set testing::outputLines->line[194].text =
     ^TESTFAILUREOFCONTAINSASSERT^
-  set testing::outputLines->line[171].text = dashes
-  set testing::outputLines->line[172].text = 
+  set testing::outputLines->line[195].text = dashes
+  set testing::outputLines->line[196].text =
     ^    Assert Failure: findstring("Good","This is good for me!") > 0^
-  set testing::outputLines->line[173].text = 
-    ^    Test Assert Failure 33^ 
-  set testing::outputLines->line[174].text = 
-    ^^
-  set testing::outputLines->line[175].text = 
+  set testing::outputLines->line[197].text =
+    ^    Test Assert Failure 33^
+  set testing::outputLines->line[198].text =
+    ^ ^
+  set testing::outputLines->line[199].text =
     ^TESTFAILUREOFNOTCONTAINSASSERT^
-  set testing::outputLines->line[176].text = dashes
-  set testing::outputLines->line[177].text = 
+  set testing::outputLines->line[200].text = dashes
+  set testing::outputLines->line[201].text =
     ^    Assert Failure: findstring("better","Good, better, worse") = 0^
-  set testing::outputLines->line[178].text = 
-    ^    Test Assert Failure 34^ 
-  set testing::outputLines->line[179].text = 
-    ^^
-  set testing::outputLines->line[180].text = 
+  set testing::outputLines->line[202].text =
+    ^    Test Assert Failure 34^
+  set testing::outputLines->line[203].text =
+    ^ ^
+  set testing::outputLines->line[204].text =
     ^TESTFAILUREOFSTARTSWITHASSERT^
-  set testing::outputLines->line[181].text = dashes
-  set testing::outputLines->line[182].text = 
+  set testing::outputLines->line[205].text = dashes
+  set testing::outputLines->line[206].text =
     ^    Assert Failure: "This is good for me!" starts with "his"^
-  set testing::outputLines->line[183].text = 
-    ^    Test Assert Failure 35^ 
-  set testing::outputLines->line[184].text = 
-    ^^
-  set testing::outputLines->line[185].text = 
+  set testing::outputLines->line[207].text =
+    ^    Test Assert Failure 35^
+  set testing::outputLines->line[208].text =
+    ^ ^
+  set testing::outputLines->line[209].text =
     ^TESTFAILUREOFNOTSTARTSWITHASSERT^
-  set testing::outputLines->line[186].text = dashes
-  set testing::outputLines->line[187].text = 
+  set testing::outputLines->line[210].text = dashes
+  set testing::outputLines->line[211].text =
     ^    Assert Failure: " This is bad for me!" does not start with " This"^
-  set testing::outputLines->line[188].text = 
-    ^    Test Assert Failure 36^ 
-  set testing::outputLines->line[189].text = 
-    ^^
-  set testing::outputLines->line[190].text = 
+  set testing::outputLines->line[212].text =
+    ^    Test Assert Failure 36^
+  set testing::outputLines->line[213].text =
+    ^ ^
+  set testing::outputLines->line[214].text =
     ^TESTFAILUREOFENDSWITHASSERT^
-  set testing::outputLines->line[191].text = dashes
-  set testing::outputLines->line[192].text = 
+  set testing::outputLines->line[215].text = dashes
+  set testing::outputLines->line[216].text =
     ^    Assert Failure: " This is good for me!" ends with " e!"^
-  set testing::outputLines->line[193].text = 
-    ^    Test Assert Failure 37^ 
-  set testing::outputLines->line[194].text = 
-    ^^
-  set testing::outputLines->line[195].text = 
+  set testing::outputLines->line[217].text =
+    ^    Test Assert Failure 37^
+  set testing::outputLines->line[218].text =
+    ^ ^
+  set testing::outputLines->line[219].text =
     ^TESTFAILUREOFNOTENDSWITHASSERT^
-  set testing::outputLines->line[196].text = dashes
-  set testing::outputLines->line[197].text = 
+  set testing::outputLines->line[220].text = dashes
+  set testing::outputLines->line[221].text =
     ^    Assert Failure: "Salt and pepper" does not end with " pepper"^
-  set testing::outputLines->line[198].text = 
-    ^    Test Assert Failure 38^ 
-  set testing::outputLines->line[199].text = 
-    ^^
-  set testing::outputLines->line[200].text = 
+  set testing::outputLines->line[222].text =
+    ^    Test Assert Failure 38^
+  set testing::outputLines->line[223].text =
+    ^ ^
+  set testing::outputLines->line[224].text =
     ^TESTFAILUREOFF8OPERATORASSERT^
-  set testing::outputLines->line[201].text = dashes
-  set testing::outputLines->line[202].text = 
+  set testing::outputLines->line[225].text = dashes
+  set testing::outputLines->line[226].text =
     ^    Assert Failure: operator(3.200000, '>', 3.210000)^
-  set testing::outputLines->line[203].text = 
-    ^    Test Assert Failure 39^ 
-  set testing::outputLines->line[204].text = 
-    ^^
-  set testing::outputLines->line[205].text = 
+  set testing::outputLines->line[227].text =
+    ^    Test Assert Failure 39^
+  set testing::outputLines->line[228].text =
+    ^ ^
+  set testing::outputLines->line[229].text =
     ^TESTFAILUREOFF8NOTOPERATORASSERT^
-  set testing::outputLines->line[206].text = dashes
-  set testing::outputLines->line[207].text = 
+  set testing::outputLines->line[230].text = dashes
+  set testing::outputLines->line[231].text =
     ^    Assert Failure: notoperator(3.210000, '>', 3.200000)^
-  set testing::outputLines->line[208].text = 
-    ^    Test Assert Failure 40^ 
-  set testing::outputLines->line[209].text = 
-    ^^
-  set testing::outputLines->line[210].text = 
+  set testing::outputLines->line[232].text =
+    ^    Test Assert Failure 40^
+  set testing::outputLines->line[233].text =
+    ^ ^
+  set testing::outputLines->line[234].text =
     ^TESTFAILUREOFI4OPERATORASSERT^
-  set testing::outputLines->line[211].text = dashes
-  set testing::outputLines->line[212].text = 
+  set testing::outputLines->line[235].text = dashes
+  set testing::outputLines->line[236].text =
     ^    Assert Failure: operator(4, '<=', 3)^
-  set testing::outputLines->line[213].text = 
-    ^    Test Assert Failure 41^ 
-  set testing::outputLines->line[214].text = 
-    ^^
-  set testing::outputLines->line[215].text = 
+  set testing::outputLines->line[237].text =
+    ^    Test Assert Failure 41^
+  set testing::outputLines->line[238].text =
+    ^ ^
+  set testing::outputLines->line[239].text =
     ^TESTFAILUREOFI4NOTOPERATORASSERT^
-  set testing::outputLines->line[216].text = dashes
-  set testing::outputLines->line[217].text = 
+  set testing::outputLines->line[240].text = dashes
+  set testing::outputLines->line[241].text =
     ^    Assert Failure: notoperator(6, '!=', 5)^
-  set testing::outputLines->line[218].text = 
-    ^    Test Assert Failure 42^ 
- set testing::outputLines->line[219].text = 
-    ^^
-  set testing::outputLines->line[220].text = 
+  set testing::outputLines->line[242].text =
+    ^    Test Assert Failure 42^
+ set testing::outputLines->line[243].text =
+    ^ ^
+  set testing::outputLines->line[244].text =
     ^TESTFAILUREOFI2OPERATORASSERT^
-  set testing::outputLines->line[221].text = dashes
-  set testing::outputLines->line[222].text = 
+  set testing::outputLines->line[245].text = dashes
+  set testing::outputLines->line[246].text =
     ^    Assert Failure: operator(1, '<', 0)^
-  set testing::outputLines->line[223].text = 
-    ^    Test Assert Failure 43^ 
-  set testing::outputLines->line[224].text = 
-    ^^
-  set testing::outputLines->line[225].text = 
+  set testing::outputLines->line[247].text =
+    ^    Test Assert Failure 43^
+  set testing::outputLines->line[248].text =
+    ^ ^
+  set testing::outputLines->line[249].text =
     ^TESTFAILUREOFI2NOTOPERATORASSERT^
-  set testing::outputLines->line[226].text = dashes
-  set testing::outputLines->line[227].text = 
+  set testing::outputLines->line[250].text = dashes
+  set testing::outputLines->line[251].text =
     ^    Assert Failure: notoperator(1, 'not !=', 1)^
-  set testing::outputLines->line[228].text = 
-    ^    Test Assert Failure 44^ 
-  set testing::outputLines->line[229].text = 
-    ^^
-  set testing::outputLines->line[230].text = 
+  set testing::outputLines->line[252].text =
+    ^    Test Assert Failure 44^
+  set testing::outputLines->line[253].text =
+    ^ ^
+  set testing::outputLines->line[254].text =
     ^TESTFAILUREOFVCOPERATORASSERT^
-  set testing::outputLines->line[231].text = dashes
-  set testing::outputLines->line[232].text = 
+  set testing::outputLines->line[255].text = dashes
+  set testing::outputLines->line[256].text =
     ^    Assert Failure: operator('41276 check    this out.', 'regexplike', '41[0-9]{4} check *this out\.')^
-  set testing::outputLines->line[233].text = 
-    ^    Test Assert Failure 45^ 
-  set testing::outputLines->line[234].text = 
-    ^^
-  set testing::outputLines->line[235].text = 
+  set testing::outputLines->line[257].text =
+    ^    Test Assert Failure 45^
+  set testing::outputLines->line[258].text =
+    ^ ^
+  set testing::outputLines->line[259].text =
     ^TESTFAILUREOFVCNOTOPERATORASSERT^
-  set testing::outputLines->line[236].text = dashes
-  set testing::outputLines->line[237].text = 
+  set testing::outputLines->line[260].text = dashes
+  set testing::outputLines->line[261].text =
     ^    Assert Failure: 0 = 1^
-  set testing::outputLines->line[238].text = 
+  set testing::outputLines->line[262].text =
     ^    Test Assert Return Value^ 
-  set testing::outputLines->line[239].text = 
-    ^^
-  set testing::outputLines->line[240].text = 
+  set testing::outputLines->line[263].text =
+    ^ ^
+  set testing::outputLines->line[264].text =
     ^TESTFAILUREOFDATETIMEOPERATORASSERT^
-  set testing::outputLines->line[241].text = dashes
-  set testing::outputLines->line[242].text = 
+  set testing::outputLines->line[265].text = dashes
+  set testing::outputLines->line[266].text =
     ^    Assert Failure: 0 = 1^
-  set testing::outputLines->line[243].text = 
+  set testing::outputLines->line[267].text =
     ^    Test Assert Return Value^ 
-  set testing::outputLines->line[244].text = 
-    ^^
-  set testing::outputLines->line[245].text = 
+  set testing::outputLines->line[268].text =
+    ^ ^
+  set testing::outputLines->line[269].text =
     ^TESTFAILUREOFDATETIMENOTOPERATORASSERT^
-  set testing::outputLines->line[246].text = dashes
-  set testing::outputLines->line[247].text = 
+  set testing::outputLines->line[270].text = dashes
+  set testing::outputLines->line[271].text =
     ^    Assert Failure: 0 = 1^
-  set testing::outputLines->line[248].text = 
+  set testing::outputLines->line[272].text =
     ^    Test Assert Return Value^ 
-  set testing::outputLines->line[249].text = 
-    ^^
-  set testing::outputLines->line[250].text = stars
+  set testing::outputLines->line[273].text =
+    ^ ^
+  set testing::outputLines->line[274].text =
+    ^TESTFAILUREOFVCASSERTSWITHCCLSTRINGLOGIC^
+  set testing::outputLines->line[275].text = dashes
+  set testing::outputLines->line[276].text =
+    concat(^    Assert Failure: "hw " = "hw^, NULL_MARKER, ^"^)
+  set testing::outputLines->line[277].text =
+    ^    Test Assert Failure 49a^
+  set testing::outputLines->line[278].text = dashes
+  set testing::outputLines->line[279].text =
+    concat(^    Assert Failure: "hw" < "hw^, NULL_MARKER, ^"^)
+  set testing::outputLines->line[280].text =
+    ^    Test Assert Failure 49b^
+  set testing::outputLines->line[281].text = dashes
+  set testing::outputLines->line[282].text =
+    ^    Assert Failure: "hw" < "hw "^
+  set testing::outputLines->line[283].text =
+    ^    Test Assert Failure 49c^
+  set testing::outputLines->line[284].text = dashes
+  set testing::outputLines->line[285].text =
+    concat(^    Assert Failure: "hw^, NULL_MARKER, ^" > "hw"^)
+  set testing::outputLines->line[286].text =
+    ^    Test Assert Failure 49d^
+  set testing::outputLines->line[287].text = dashes
+  set testing::outputLines->line[288].text =
+    ^    Assert Failure: "hw " > "hw"^
+  set testing::outputLines->line[289].text =
+    ^    Test Assert Failure 49e^
+  set testing::outputLines->line[290].text = dashes
+  set testing::outputLines->line[291].text =
+    concat(^    Assert Failure: "hw" != "hw^, NULL_MARKER, ^"^)
+  set testing::outputLines->line[292].text =
+    ^    Test Assert Failure 50a^
+  set testing::outputLines->line[293].text = dashes
+  set testing::outputLines->line[294].text =
+    ^    Assert Failure: "hw" != "hw "^
+  set testing::outputLines->line[295].text =
+    ^    Test Assert Failure 50b^
+  set testing::outputLines->line[296].text =
+    ^ ^
+  set testing::outputLines->line[297].text = stars
+
+record ut_cclut_cclut1TestCaseRequest (
+  1 testCaseDirectory = vc
+  1 testCaseFileName = vc
+  1 testNamePattern = vc
+  1 programs[*]
+    2 programName = vc
+    2 compile = i2
+  1 optimizerMode = vc
+  1 deprecatedFlag = vc
+  1 failFast = i2
+) with protect
     
 record ut_cclut_testCaseResults (
   1 resultInd = i2
@@ -1204,9 +1321,10 @@ record ut_cclut_testCaseResults (
       3 lineNumber = i4
       3 errorText = vc
 %i cclsource:status_block.inc
-) with protect    
+) with protect
 
   execute cclut "ut_cclut_output", "cclsource", "ut_cclut_assert_failure", "", "", "", FALSE with
+      replace("CCLUT1TESTCASEREQUEST", ut_cclut_testCaseRequest),
       replace("CCLUT1TESTCASERESULTS", ut_cclut_testCaseResults)
   call testing::checkLines(testing::outputLines)
 end ;;;testAssertFailures
@@ -1237,10 +1355,56 @@ subroutine testParameterNameConflicts(null)
   set successIndA = cclutAssertf8AlmostEqual(CURREF, "almost equal", 3.25, 3.20, 0.051)
   set successIndB = cclutAssertI4Equal(CURREF, "assert success", successIndA, TRUE)
 
-  set successIndA = cclutAssertVCOperator(CURREF, "vc operator", "hello world", "regexplike", "h.*")
+  set successIndA = cclutAssertVCOperator(CURREF, "vc operator", "hw", "regexplike", "h.*")
   set successIndB = cclutAssertI4Equal(CURREF, "assert success", successIndA, TRUE)
   
-  set successIndA = cclutAssertStartsWith(CURREF, "starts with", "hello", "hello world")
+  set successIndA = cclutAssertStartsWith(CURREF, "starts with", "hello", "hello cerner")
   set successIndB = cclutAssertI4Equal(CURREF, "assert success", successIndA, TRUE)
-
 end ;;;testParameterNameConflicts
+
+
+/**
+  Confirms that a cclut::useCclStringLogic will cause trailing nulls and spaces to be ignored with respect to asserts.
+  Note that 1, 1a, 6a and 7a fail with or without cclut::useCclStringLogic, further support for the extra string logic.
+  If vcNull equals vcEmpty and vcEmpty equals vcSpace (2/2a and 3/3a), why doesn't vcNull equal vcSpace (1/1a)?
+*/
+subroutine testStringLogicOverride(null)
+  declare cclut::useCclStringLogic = i2 with protect, noconstant(TRUE)
+
+  declare vcNull = vc with protect, constant("")
+  declare vcEmpty = vc with protect, constant(trim(""))
+  declare vcSpace = vc with protect, constant(notrim(" "))
+  declare vcDoubleSpace = vc with protect, constant(notrim("  "))
+
+;  call cclutAssertVCEqual(CURREF, "string logic override 1", vcNull, notrim(vcSpace))
+;  call cclutAssertVCEqual(CURREF, "string logic override 1a", notrim(vcSpace), vcNull)
+
+  call cclutAssertVCEqual(CURREF, "string logic override 2", vcNull, vcEmpty)
+  call cclutAssertVCEqual(CURREF, "string logic override 2a", vcEmpty, vcNull)
+
+  call cclutAssertVCEqual(CURREF, "string logic override 3", notrim(vcSpace), vcEmpty)
+  call cclutAssertVCEqual(CURREF, "string logic override 3a", vcEmpty, notrim(vcSpace))
+
+  call cclutAssertVCEqual(CURREF, "string logic override 4", notrim(vcSpace), notrim(vcDoubleSpace))
+  call cclutAssertVCEqual(CURREF, "string logic override 4a", notrim(vcDoubleSpace), notrim(vcSpace))
+
+  call cclutAssertVCEqual(CURREF,"string logic override 5a", "hw", concat("hw ", char(0)))
+  call cclutAssertVCEqual(CURREF,"string logic override 5b", concat("hw ", char(0)), "hw")
+  call cclutAssertVCEqual(CURREF,"string logic override 5c", "hw", concat("hw", char(0), char(32)))
+  call cclutAssertVCEqual(CURREF,"string logic override 5d", concat("hw", char(0), char(32)), "hw")
+
+;  call cclutAssertVCNotLessThan(CURREF,"string logic override 6a", vcNull, notrim(vcSpace))
+  call cclutAssertVCNotLessThan(CURREF,"string logic override 6b", notrim(vcSpace), notrim(vcDoubleSpace))
+  call cclutAssertVCNotLessThan(CURREF,"string logic override 6c", vcEmpty, vcNull)
+  call cclutAssertVCNotLessThan(CURREF,"string logic override 6d", vcEmpty, notrim(vcSpace))
+  call cclutAssertVCNotLessThan(CURREF,"string logic override 6e", "hw", "hw ")
+  call cclutAssertVCNotLessThan(CURREF,"string logic override 6f", "hw", concat("hw ", char(0)))
+
+;  call cclutAssertVCNotGreaterThan(CURREF,"string logic override 7a", notrim(vcSpace), vcNull)
+  call cclutAssertVCNotGreaterThan(CURREF,"string logic override 7b", notrim(vcDoubleSpace), notrim(vcSpace))
+  call cclutAssertVCNotGreaterThan(CURREF,"string logic override 7c", vcNull, vcEmpty)
+  call cclutAssertVCNotGreaterThan(CURREF,"string logic override 7d", notrim(vcSpace), vcEmpty)
+  call cclutAssertVCNotGreaterThan(CURREF,"string logic override 7e", "hw ", "hw")
+  call cclutAssertVCNotGreaterThan(CURREF,"string logic override 7f", concat("hw ", char(0)), "hw")
+end ;;;testStringLogicOverride
+

@@ -19,8 +19,8 @@ subroutine testCreateXmlElement(null)
       CURREF, "cclut::createXmlElement expected equal simple", xml, "<SOME_ELEMENT>the content for some element</SOME_ELEMENT>")
   set xml = cclut::createXmlElement("another_element", "<INNER_ELEMENT>the content for some element</INNER_ELEMENT>")
   set stat = cclutAssertVCEqual(
-      CURREF, "cclut::createXmlElement expected equal complex", xml, 
-      "<ANOTHER_ELEMENT><INNER_ELEMENT>the content for some element</INNER_ELEMENT></ANOTHER_ELEMENT>")      
+      CURREF, "cclut::createXmlElement expected equal complex", xml,
+      "<ANOTHER_ELEMENT><INNER_ELEMENT>the content for some element</INNER_ELEMENT></ANOTHER_ELEMENT>")
 end ;;;testCreateXmlElement
 
 
@@ -30,10 +30,10 @@ end ;;;testCreateXmlElement
 subroutine testRetrieveXmlContent0(null)
   declare found = i2 with protect, noconstant(FALSE)
   declare value = vc with protect, noconstant("")
-  set value = cclut::retrieveXmlContent(~<LINELIMIT></LINELIMIT><CONTEXT><![CDATA[setupOnce executed]]></CONTEXT>~, 
+  set value = cclut::retrieveXmlContent(~<LINELIMIT></LINELIMIT><CONTEXT><![CDATA[setupOnce executed]]></CONTEXT>~,
       "linelimit", 1, found)
   call cclutAssertI2Equal(CURREF, "linenumber found", found, TRUE)
-  call cclutAssertVCEqual(CURREF, "line number", value, "")
+  call cclutAssertVCEqual(CURREF, "line number", value, trim(""))
 end ;;;testRetrieveXmlContent0
 
 /**
@@ -56,35 +56,35 @@ subroutine testRetrieveXmlContentB(null)
   declare content = vc with protect, noconstant("")
   declare found = i2 with protect, noconstant(FALSE)
   declare stat = i4 with protect, noconstant(0)
-  
+
   set xml = "<TAG_1><TAG_1_1>1.1 content</TAG_1_1><TAG_1_2><TAG_1_2_1>1.2.1 content</TAG_1_2_1>\
 <TAG_1_2_2>1.2.2 content</TAG_1_2_2></TAG_1_2><TAG_1_3><![CDATA[1.3 content]]></TAG_1_3></TAG_1>"
-  
+
   set content = cclut::retrieveXmlContent(xml, "TAG_1_2_1", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "tag 1.2.1 found", found, TRUE)
   set stat = cclutAssertVCEqual(CURREF, "tag 1.2.1 content", content, "1.2.1 content")
   set content = cclut::retrieveXmlContent(xml, "TAG_1_2", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "tag 1.2 found", found, TRUE)
-  set stat = cclutAssertVCEqual(CURREF, "tag 1.2 content", content, 
+  set stat = cclutAssertVCEqual(CURREF, "tag 1.2 content", content,
       "<TAG_1_2_1>1.2.1 content</TAG_1_2_1><TAG_1_2_2>1.2.2 content</TAG_1_2_2>")
   set content = cclut::retrieveXmlContent(xml, "TAG_1", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "tag 1 found", found, TRUE)
-  set stat = cclutAssertVCEqual(CURREF, "tag 1.2.1 content", content, 
+  set stat = cclutAssertVCEqual(CURREF, "tag 1.2.1 content", content,
       "<TAG_1_1>1.1 content</TAG_1_1><TAG_1_2><TAG_1_2_1>1.2.1 content</TAG_1_2_1><TAG_1_2_2>1.2.2 content</TAG_1_2_2>\
 </TAG_1_2><TAG_1_3><![CDATA[1.3 content]]></TAG_1_3>")
 
   set xml = "<TAG_3>this is bad xml</TAG_4>"
   set content = cclut::retrieveXmlContent(xml, "TAG_3", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "tag 3 found", found, FALSE)
-  set stat = cclutAssertVCEqual(CURREF, "tag 3 content", content, "") 
+  set stat = cclutAssertVCEqual(CURREF, "tag 3 content", content, "")
 
   set xml = "<TAG_4><![CDATA[  check this out  ]]></TAG_4>"
   set content = cclut::retrieveXmlContent(xml, "tag_4", 3, found)
   set stat = cclutAssertI2Equal(CURREF, "tag 4 @ 3 found", found, FALSE)
-  set stat = cclutAssertVCEqual(CURREF, "tag 4 @ 3 content", content, "") 
+  set stat = cclutAssertVCEqual(CURREF, "tag 4 @ 3 content", content, "")
   set content = cclut::retrieveXmlContent(xml, "tag_4", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "tag 4 found", found, TRUE)
-  set stat = cclutAssertVCEqual(CURREF, "tag 4 content", content, "  check this out  ")   
+  set stat = cclutAssertVCEqual(CURREF, "tag 4 content", content, "  check this out")
 end ;;;testRetrieveXmlContentB
 
 
@@ -105,7 +105,7 @@ subroutine testRetrieveXmlContentComplex(null)
   declare condition = vc with protect, noconstant("")
   declare found = i2 with protect, noconstant(FALSE)
   declare stat = i4 with protect, noconstant(0)
-  
+
   set xml = 
 ~<TC><NM>ut_cclut_suo_su_td_tdo</NM><TSTS><TST><NM>SETUPONCE</NM><ASSRTS><ASSRT><LINENO>801</LINENO><CTX><![CDATA[setupOnce e\
 xecuted]]></CTX><RSLT>PASSED</RSLT><TST><![CDATA["SO"="SO"]]></TST></ASSRT></ASSRTS><ERRS></ERRS><RSLT>PASSED</RSLT></TST><TS\
@@ -123,7 +123,7 @@ RT><ASSRT><LINENO>831</LINENO><CTX><![CDATA[teardown executed]]></CTX><RSLT>PASS
 ASSRTS><ERRS></ERRS><RSLT>PASSED</RSLT></TST><TST><NM>TEARDOWNONCE</NM><ASSRTS><ASSRT><LINENO>811</LINENO><CTX><![CDATA[teard\
 ownOnce executed]]></CTX><RSLT>PASSED</RSLT><TST><![CDATA["TO"="TO"]]></TST></ASSRT></ASSRTS><ERRS></ERRS><RSLT>PASSED</RSLT>\
 </TST></TSTS></TC>~
-  
+
   set contentTC = cclut::retrieveXmlContent(xml, "tc", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "tc found", found, TRUE)
   set name = cclut::retrieveXmlContent(contentTc, "nm", 1, found)
@@ -136,7 +136,7 @@ ownOnce executed]]></CTX><RSLT>PASSED</RSLT><TST><![CDATA["TO"="TO"]]></TST></AS
   set name = cclut::retrieveXmlContent(contentTst, "nm", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "name found", found, TRUE)
   set stat = cclutAssertVCEqual(CURREF, "nm value", name, "SETUPONCE")
-  
+
   set contentAssrts = cclut::retrieveXmlContent(contentTst, "assrts", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "assrts found", found, TRUE)
   set contentAssrt = cclut::retrieveXmlContent(contentAssrts, "assrt", 1, found)
@@ -149,7 +149,7 @@ ownOnce executed]]></CTX><RSLT>PASSED</RSLT><TST><![CDATA["TO"="TO"]]></TST></AS
   set ctx = cclut::retrieveXmlContent(contentAssrt, "ctx", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "ctx found", found, TRUE)
   set stat = cclutAssertVCEqual(CURREF, "ctx value", ctx, "setupOnce executed")
-    
+
   set condition = cclut::retrieveXmlContent(contentAssrt, "tst", 1, found)
   set stat = cclutAssertI2Equal(CURREF, "condition found", found, TRUE)
   set stat = cclutAssertVCEqual(CURREF, "condition value", condition, ~"SO"="SO"~)

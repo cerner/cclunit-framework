@@ -31,7 +31,7 @@ subroutine testNextDelimitedItem::lomain(null)
   set stat = cclutAssertVCEqual(CURREF, "item 1.3", item, "finally")
   set stat = cclutAssertVCEqual(CURREF, "sourceString 1.3", sourceString, "")
   set item = nextDelimitedItem(sourceString, ";")
-  set stat = cclutAssertVCEqual(CURREF, "item 1.4", item, "")
+  set stat = cclutAssertVCEqual(CURREF, "item 1.4", item, trim(""))
   set stat = cclutAssertVCEqual(CURREF, "sourceString 1.4", sourceString, "")
 
   set sourceString = "hello world;;; we have arrived ;;;  finally"
@@ -45,7 +45,7 @@ subroutine testNextDelimitedItem::lomain(null)
   set stat = cclutAssertVCEqual(CURREF, "item 2.3", item, "finally")
   set stat = cclutAssertVCEqual(CURREF, "sourceString 2.3", sourceString, "")
   set item = nextDelimitedItem(sourceString, ";;;")
-  set stat = cclutAssertVCEqual(CURREF, "item 2.4", item, "")
+  set stat = cclutAssertVCEqual(CURREF, "item 2.4", item, trim(""))
   set stat = cclutAssertVCEqual(CURREF, "sourceString 2.4", sourceString, "")
 end ;;;testNextDelimitedItem
 

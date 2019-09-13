@@ -43,7 +43,7 @@ subroutine test_cclutDoArraySplit_pipe_zero_empty(null)
     set itemCount = cclutDoArraySplit(inRec, strSource, "|")
 
     call cclutAssertI4Equal(CURREF, "item count a", itemCount, 1)
-    call cclutAssertVcEqual(CURREF, "item value a 1", inRec->qual[1].str, " ")
+    call cclutAssertVcEqual(CURREF, "item value a 1", inRec->qual[1].str, trim(""))
 end
 
 /**
@@ -105,10 +105,10 @@ subroutine test_cclutDoArraySplit_pipe_three_empty_ends(null)
     set itemCount = cclutDoArraySplit(yourRec, strSource, "|")
 
     call cclutAssertI4Equal(CURREF, "item count e", itemCount, 4)
-    call cclutAssertVcEqual(CURREF, "item value e 1", yourRec->qual[1].str, " ")
+    call cclutAssertVcEqual(CURREF, "item value e 1", yourRec->qual[1].str, trim(""))
     call cclutAssertVcEqual(CURREF, "item value e 1", yourRec->qual[2].str, "field 2")
     call cclutAssertVcEqual(CURREF, "item value e 1", yourRec->qual[3].str, "field 3")
-    call cclutAssertVcEqual(CURREF, "item value e 1", yourRec->qual[4].str, " ")
+    call cclutAssertVcEqual(CURREF, "item value e 1", yourRec->qual[4].str, trim(""))
 end
 
 /**

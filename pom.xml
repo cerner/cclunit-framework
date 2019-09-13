@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cerner.ccl</groupId>
     <artifactId>cclunit-framework-source</artifactId>
-    <version>3.4</version>
+    <version>3.5-SNAPSHOT</version>
     <name>CCL Testing Framework</name>
     <description>A framework to facilitate the automated testing of CCL code.</description>
     <packaging>ccl</packaging>

@@ -223,15 +223,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
     ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[4].text = 
     ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
     ^PASSED: 5           failed: 0           errored: 0^
   set testing::outputLines->line[6].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[7].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[8].text = 
     ^Passed Tests^
   set testing::outputLines->line[9].text = 
@@ -271,15 +271,15 @@ subroutine testNoIssuesWithoutStructures(null)
   set testing::outputLines->line[2].text = 
     ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[4].text = 
     ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
     ^PASSED: 5           failed: 0           errored: 0^
   set testing::outputLines->line[6].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[7].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[8].text = 
     ^Passed Tests^
   set testing::outputLines->line[9].text = 
@@ -337,15 +337,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
     ^                                               CCL Unit Test Report - CBO                        ^
   set testing::outputLines->line[3].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[4].text = 
     ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
     ^PASSED: 5           failed: 0           errored: 0^
   set testing::outputLines->line[6].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[7].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[8].text = 
     ^Passed Tests^
   set testing::outputLines->line[9].text = 
@@ -401,15 +401,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
     ^                                               CCL Unit Test Report - RBO                        ^
   set testing::outputLines->line[3].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[4].text = 
     ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
     ^PASSED: 4           failed: 0           errored: 0^
   set testing::outputLines->line[6].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[7].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[8].text = 
     ^Passed Tests^
   set testing::outputLines->line[9].text = 
@@ -478,15 +478,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 3           FAILED: 2           errored: 0^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Failed Tests^
   set testing::outputLines->line[9].text = 
@@ -500,7 +500,7 @@ TEARDOWNONCE
   set testing::outputLines->line[13].text = 
 ^    testOne failure^
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
 ^TESTTHREE^
   set testing::outputLines->line[16].text = 
@@ -516,9 +516,9 @@ TEARDOWNONCE
   set testing::outputLines->line[21].text = 
 ^    testThree failure B^
   set testing::outputLines->line[22].text = 
-^^
+^ ^
   set testing::outputLines->line[23].text = 
-^^
+^ ^
   set testing::outputLines->line[24].text = 
 ^Passed Tests^
   set testing::outputLines->line[25].text = 
@@ -550,29 +550,29 @@ subroutine testSetupError(null)
 /*
 ^========================================================================================================================^
 ^                                                  CCL Unit Test Report                           ^
-^^
+^ ^
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
 ^PASSED: 2           failed: 0           ERRORED: 3^
-^^
-^^
+^ ^
+^ ^
 ^Errored Tests^
 ^========================================================================================================================^
 ^TESTONE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
+^ ^
 ^TESTTWO^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
+^ ^
 ^TESTTHREE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
-^^
+^ ^
+^ ^
 ^Passed Tests^
 ^========================================================================================================================^
 ^SETUPONCE^
@@ -588,15 +588,15 @@ subroutine testSetupError(null)
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 2           failed: 0           ERRORED: 3^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Errored Tests^
   set testing::outputLines->line[9].text = 
@@ -611,7 +611,7 @@ subroutine testSetupError(null)
     "    Error: %CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}",
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
 ^TESTTWO^
   set testing::outputLines->line[16].text = 
@@ -622,7 +622,7 @@ subroutine testSetupError(null)
     "    Error: %CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}",
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
   set testing::outputLines->line[19].text = 
-^^
+^ ^
   set testing::outputLines->line[20].text = 
 ^TESTTHREE^
   set testing::outputLines->line[21].text = 
@@ -633,9 +633,9 @@ subroutine testSetupError(null)
     "    Error: %CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}",
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
   set testing::outputLines->line[24].text = 
-^^
+^ ^
   set testing::outputLines->line[25].text = 
-^^
+^ ^
   set testing::outputLines->line[26].text = 
 ^Passed Tests^
   set testing::outputLines->line[27].text = 
@@ -665,26 +665,26 @@ subroutine testSetupOnceErrorFailTest(null)
 /*
 ^========================================================================================================================^
 ^                                                  CCL Unit Test Report                           ^
-^^
+^ ^
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
 ^PASSED: 2           FAILED: 2           ERRORED: 1^
-^^
-^^
+^ ^
+^ ^
 ^Errored Tests^
 ^========================================================================================================================^
 ^SETUPONCE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2215992(802,1)171118:0609{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
-^^
+^ ^
+^ ^
 ^Failed Tests^
 ^========================================================================================================================^
 ^TESTONE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Assert Failure: 0 = 1^
 ^    testOne failure^
-^^
+^ ^
 ^TESTTHREE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Assert Failure: 0 = 1^
@@ -692,8 +692,8 @@ subroutine testSetupOnceErrorFailTest(null)
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Assert Failure: 0 = 1^
 ^    testThree failure B^
-^^
-^^
+^ ^
+^ ^
 ^Passed Tests^
 ^========================================================================================================================^
 ^TESTTWO^
@@ -709,15 +709,15 @@ subroutine testSetupOnceErrorFailTest(null)
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 2           FAILED: 2           ERRORED: 1^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Errored Tests^
   set testing::outputLines->line[9].text = 
@@ -733,9 +733,9 @@ subroutine testSetupOnceErrorFailTest(null)
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
 ^    EDERROR) to incompatible type.^
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
-^^
+^ ^
   set testing::outputLines->line[16].text = 
 ^Failed Tests^
   set testing::outputLines->line[17].text = 
@@ -749,7 +749,7 @@ subroutine testSetupOnceErrorFailTest(null)
   set testing::outputLines->line[21].text = 
 ^    testOne failure^
   set testing::outputLines->line[22].text = 
-^^
+^ ^
   set testing::outputLines->line[23].text = 
 ^TESTTHREE^
   set testing::outputLines->line[24].text = 
@@ -765,9 +765,9 @@ subroutine testSetupOnceErrorFailTest(null)
   set testing::outputLines->line[29].text = 
 ^    testThree failure B^
   set testing::outputLines->line[30].text = 
-^^
+^ ^
   set testing::outputLines->line[31].text = 
-^^
+^ ^
   set testing::outputLines->line[32].text = 
 ^Passed Tests^
   set testing::outputLines->line[33].text = 
@@ -820,15 +820,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
     ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[4].text = 
     ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
     ^PASSED: 5           failed: 0           errored: 0^
   set testing::outputLines->line[6].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[7].text = 
-    ^^
+    ^ ^
   set testing::outputLines->line[8].text = 
     ^Passed Tests^
   set testing::outputLines->line[9].text = 
@@ -877,7 +877,7 @@ Test Case:
   set testing::outputLines->line[2].text = 
 ^                                               CCL Unit Test Error Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:^
   set testing::outputLines->line[5].text = 
@@ -922,7 +922,7 @@ Test Case: cclsource:ut_cclut_suo_su_td_tdo
   set testing::outputLines->line[2].text = 
 ^                                               CCL Unit Test Error Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
@@ -960,11 +960,11 @@ Test Case: cclsource:ut_cclut_suo_su_td_tdo
   
   call cclutAssertVcEqual(CURREF, "framework failure status", ut_cclut_testCaseReplyX->status_data.status, "F")
   call cclutAssertVcEqual(CURREF, "framework failure operationName", 
-      ut_cclut_testCaseReplyX->status_data.subeventstatus[1].operationName, "pre-executeTestLogic-1")
+      ut_cclut_testCaseReplyX->status_data.subeventstatus[1].operationName, "pre-executeTestLogic-1   ")
   call cclutAssertVcEqual(CURREF, "framework failure operationStatus", 
       ut_cclut_testCaseReplyX->status_data.subeventstatus[1].operationStatus, "F")
   call cclutAssertVcEqual(CURREF, "framework failure targetObjectName", 
-      ut_cclut_testCaseReplyX->status_data.subeventstatus[1].targetObjectName, "ut_cclut_suo_su_td_tdo")
+      ut_cclut_testCaseReplyX->status_data.subeventstatus[1].targetObjectName, "ut_cclut_suo_su_td_tdo   ")
   call cclutAssertVcOperator(CURREF, "framework failure targetObjectValue", 
     ut_cclut_testCaseReplyX->status_data.subeventstatus[1].targetObjectValue, 
     "regexplike", concat("Execution Failed: ", expectedErrorPattern))
@@ -994,7 +994,7 @@ Test Case: cclsource:ut_cclut_no_tests
   set testing::outputLines->line[2].text = 
 ^                                               CCL Unit Test Error Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_no_tests^
   set testing::outputLines->line[5].text = 
@@ -1064,15 +1064,15 @@ Passed Tests
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^passed: 0           FAILED: 4           errored: 0^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Failed Tests^
   set testing::outputLines->line[9].text = 
@@ -1086,7 +1086,7 @@ Passed Tests
   set testing::outputLines->line[13].text = 
 ^    setupOnce failure^
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
 ^TESTONE^
   set testing::outputLines->line[16].text = 
@@ -1096,7 +1096,7 @@ Passed Tests
   set testing::outputLines->line[18].text = 
 ^    testOne failure^
   set testing::outputLines->line[19].text = 
-^^
+^ ^
   set testing::outputLines->line[20].text = 
 ^TESTTHREE^
   set testing::outputLines->line[21].text = 
@@ -1112,7 +1112,7 @@ Passed Tests
   set testing::outputLines->line[26].text = 
 ^    testThree failure B^
   set testing::outputLines->line[27].text = 
-^^
+^ ^
   set testing::outputLines->line[28].text = 
 ^TEARDOWNONCE^
   set testing::outputLines->line[29].text = 
@@ -1122,7 +1122,7 @@ Passed Tests
   set testing::outputLines->line[31].text = 
 ^    teardownOnce failure^
   set testing::outputLines->line[32].text = 
-^^
+^ ^
   set testing::outputLines->line[33].text = 
 ^************************************************************************************************************************^
 
@@ -1156,7 +1156,7 @@ Errored Tests
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
+^ ^
 ^TESTTHREE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
@@ -1164,7 +1164,7 @@ Errored Tests
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
+^ ^
 Passed Tests
 ========================================================================================================================
 SETUPONCE
@@ -1181,15 +1181,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 2           failed: 0           ERRORED: 2^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Errored Tests^
   set testing::outputLines->line[9].text = 
@@ -1204,7 +1204,7 @@ TEARDOWNONCE
     "    Error: %CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}",
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
 ^TESTTHREE^
   set testing::outputLines->line[16].text = 
@@ -1222,9 +1222,9 @@ TEARDOWNONCE
     "    Error: %CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}",
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
   set testing::outputLines->line[22].text = 
-^^
+^ ^
   set testing::outputLines->line[23].text = 
-^^
+^ ^
   set testing::outputLines->line[24].text = 
 ^Passed Tests^
   set testing::outputLines->line[25].text = 
@@ -1275,7 +1275,7 @@ TESTCCLUTERRORS
   set testing::outputLines->line[2].text = 
 ^                                               CCL Unit Test Error Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
@@ -1328,7 +1328,7 @@ TESTCCLUTERRORS
   set testing::outputLines->line[2].text = 
 ^                                               CCL Unit Test Error Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
@@ -1381,7 +1381,7 @@ TESTCCLUTERRORS
   set testing::outputLines->line[2].text = 
 ^                                               CCL Unit Test Error Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
@@ -1439,15 +1439,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 2           FAILED: 1           errored: 0^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Failed Tests^
   set testing::outputLines->line[9].text = 
@@ -1461,9 +1461,9 @@ TEARDOWNONCE
   set testing::outputLines->line[13].text = 
 ^    testOne failure^
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
-^^
+^ ^
   set testing::outputLines->line[16].text = 
 ^Passed Tests^
   set testing::outputLines->line[17].text = 
@@ -1493,19 +1493,19 @@ subroutine testFailFastSetupError(null)
 /*
 ^========================================================================================================================^
 ^                                                  CCL Unit Test Report                           ^
-^^
+^ ^
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
 ^PASSED: 2           failed: 0           ERRORED: 1^
-^^
-^^
+^ ^
+^ ^
 ^Errored Tests^
 ^========================================================================================================================^
 ^TESTONE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
-^^
+^ ^
+^ ^
 ^Passed Tests^
 ^========================================================================================================================^
 ^SETUPONCE^
@@ -1521,15 +1521,15 @@ subroutine testFailFastSetupError(null)
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 2           failed: 0           ERRORED: 1^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Errored Tests^
   set testing::outputLines->line[9].text = 
@@ -1544,9 +1544,9 @@ subroutine testFailFastSetupError(null)
     "    Error: %CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}",
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
-^^
+^ ^
   set testing::outputLines->line[16].text = 
 ^Passed Tests^
   set testing::outputLines->line[17].text = 
@@ -1576,23 +1576,23 @@ subroutine testFailFastSetupOnceErrorFailTest(null)
 /*
 ^========================================================================================================================^
 ^                                                  CCL Unit Test Report                           ^
-^^
+^ ^
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
 ^PASSED: 1           FAILED: 0           ERRORED: 1^
-^^
-^^
+^ ^
+^ ^
 ^Errored Tests^
 ^========================================================================================================================^
 ^SETUPONCE^
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2215992(802,1)171118:0609{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
-^^
+^ ^
+^ ^
 ^Failed Tests^
 ^========================================================================================================================^
-^^
-^^
+^ ^
+^ ^
 ^Passed Tests^
 ^========================================================================================================================^
 ^TEARDOWNONCE^
@@ -1607,15 +1607,15 @@ subroutine testFailFastSetupOnceErrorFailTest(null)
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 1           failed: 0           ERRORED: 1^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Errored Tests^
   set testing::outputLines->line[9].text = 
@@ -1631,9 +1631,9 @@ subroutine testFailFastSetupOnceErrorFailTest(null)
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
 ^    EDERROR) to incompatible type.^
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
-^^
+^ ^
   set testing::outputLines->line[16].text = 
 ^Passed Tests^
   set testing::outputLines->line[17].text = 
@@ -1693,15 +1693,15 @@ Passed Tests
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^passed: 0           FAILED: 2           errored: 0^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Failed Tests^
   set testing::outputLines->line[9].text = 
@@ -1715,7 +1715,7 @@ Passed Tests
   set testing::outputLines->line[13].text = 
 ^    setupOnce failure^
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
 ^TEARDOWNONCE^
   set testing::outputLines->line[16].text = 
@@ -1725,7 +1725,7 @@ Passed Tests
   set testing::outputLines->line[18].text = 
 ^    teardownOnce failure^
   set testing::outputLines->line[19].text = 
-^^
+^ ^
   set testing::outputLines->line[20].text = 
 ^************************************************************************************************************************^
 
@@ -1759,7 +1759,7 @@ Errored Tests
 ^------------------------------------------------------------------------------------------------------------------------^
 ^    Error: %CCL-E-94-PRG_7073463_2175368(822,1)171118:0602{GUARANTEEDERROR}Assignment of Report expression (GUARANTE^
 ^    EDERROR) to incompatible type.^
-^^
+^ ^
 Passed Tests
 ========================================================================================================================
 SETUPONCE
@@ -1775,15 +1775,15 @@ TEARDOWNONCE
   set testing::outputLines->line[2].text = 
 ^                                                  CCL Unit Test Report                           ^
   set testing::outputLines->line[3].text = 
-^^
+^ ^
   set testing::outputLines->line[4].text = 
 ^Test Case: cclsource:ut_cclut_suo_su_td_tdo^
   set testing::outputLines->line[5].text = 
 ^PASSED: 2           failed: 0           ERRORED: 1^
   set testing::outputLines->line[6].text = 
-^^
+^ ^
   set testing::outputLines->line[7].text = 
-^^
+^ ^
   set testing::outputLines->line[8].text = 
 ^Errored Tests^
   set testing::outputLines->line[9].text = 
@@ -1798,9 +1798,9 @@ TEARDOWNONCE
     "    Error: %CCL-E-94-PRG_[0-9]+_[0-9]+\([^)]+\)[0-9]+:[0-9]+\{GUARANTEEDERROR\}",
     ^Assignment of Report expression \(GUARANTEEDERROR) to incompatible type.^)
   set testing::outputLines->line[14].text = 
-^^
+^ ^
   set testing::outputLines->line[15].text = 
-^^
+^ ^
   set testing::outputLines->line[16].text = 
 ^Passed Tests^
   set testing::outputLines->line[17].text = 

@@ -14,6 +14,10 @@ subroutine setup(null)
 end 
 
 subroutine testSameColumnName(null)
+    if (cclutGetCurrentGroup(null) = 1 and reqinfo->updt_id = 0.0)
+        call cclutAssertI2Equal(CURREF, "authentication required to run this test", TRUE, FALSE)
+        return(null)
+    endif
     if (validate(cclut_testRecord) = FALSE)
         record cclut_testRecord (1 tableName = vc 1 value = vc)
     endif

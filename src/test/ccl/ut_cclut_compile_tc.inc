@@ -97,7 +97,7 @@ subroutine testCompileTestCaseFileDictionaryFailure(null)
     curnamespace = "DictionaryFailure"
   call cclutAssertI2Equal(CURREF, "genTCP called B", genTCPCalledA, TRUE)
   call cclutAssertVcEqual(CURREF, "expect failure B", compileReply->status_data->status, "F")
-  call cclutAssertVcEqual(CURREF, "expect no generated object name", compileReply->testCaseObjectName, " ")
+  call cclutAssertVcEqual(CURREF, "expect no generated object name", compileReply->testCaseObjectName, trim(""))
 end ;testCompileTestCaseFileDictionaryFailure
 subroutine DictionaryFailure::genTCP(dirLogical, fileName, listingLogical, listingName, progName , errMessage)
   set genTCPCalledA = TRUE
@@ -286,7 +286,7 @@ subroutine testTestCaseFileDoesNotExist(null)
       replace("CCLUTREQUEST", tctcgRequest), replace("CCLUTREPLY", tctcgReply)
 
   set stat = cnvtjsontorec(_memory_reply_string)
-  call cclutAssertVCEqual(CURREF, "expect no object name", tctcgReply->testCaseObjectName, " ")
+  call cclutAssertVCEqual(CURREF, "expect no object name", tctcgReply->testCaseObjectName, trim(""))
   call cclutAssertVCEqual(CURREF, "expect a failure", tctcgReply->status_data.status, "F")
   call cclutAssertVCEqual(CURREF, "expect a failure messsage a", tctcgReply->status_data.subeventstatus[1].operationName,
       "generateTestCaseProgram")

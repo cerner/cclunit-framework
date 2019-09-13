@@ -20,7 +20,7 @@ declare cclut::reportAssert(cclutLineNum = i4, cclutCtx = vc, cclutCondition = v
 /**
   Evaluates whether a provided condition is true or false using call parser then invokes reportAssert
   to report the outcome. Used for checking an assert.
- 
+
   @param cclutLineNum
     The line number where the assert occurs
   @param cclutCtx
@@ -37,7 +37,7 @@ end ;;;cclut::evaluateCondition
 /**
   Evaluates whether a provided condition is true or false using call parser then invokes reportAssert
   to report the outcome. Used for checking an assert.
- 
+
   @param cclutLineNum
     The line number where the assert occurs
   @param cclutCtx
@@ -72,7 +72,7 @@ end ;;;evaluateCondition
 /**
   Evaluates whether a pair of values satisfy a given binary comparison then invokes reportAssert to report the outcome.
   Used for checking an assert.
- 
+
   @param cclutLineNum
     The line number where the assert occurs.
   @param cclutCtx
@@ -97,27 +97,51 @@ subroutine cclut::evaluateComparison(cclutLineNum, cclutCtx, cclutComparison, cc
   set cclutReturnValue = FALSE
   set cclutCondition = build2('"', cclutVal1, '" ', cclutComparison, ' "', cclutVal2, '"')
   if (cclutComparison = "=")
-    if (cclutVal1 = cclutVal2)
+    if (
+         cclutVal1 = cclutVal2
+         and
+         (textlen(cclutVal1) = textlen(cclutVal2) or cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = ">")
-    if (cclutVal1 > cclutVal2)
+    if (
+         cclutVal1 > cclutVal2
+         or
+         (cclutVal1 = cclutVal2 and textlen(cclutVal1) > textlen(cclutVal2) and not cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = ">=")
-    if (cclutVal1 >= cclutVal2)
+    if (
+         cclutVal1 > cclutVal2
+         or
+         (cclutVal1 = cclutVal2 and (textlen(cclutVal1) >= textlen(cclutVal2) or cclut::useCclStringLogic))
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = "<")
-    if (cclutVal1 < cclutVal2)
+    if (
+         cclutVal1 < cclutVal2
+         or
+         (cclutVal1 = cclutVal2 and textlen(cclutVal1) < textlen(cclutVal2) and not cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = "<=")
-    if (cclutVal1 <= cclutVal2)
+    if (
+         cclutVal1 < cclutVal2
+         or
+         (cclutVal1 = cclutVal2 and (textlen(cclutVal1) <= textlen(cclutVal2) or cclut::useCclStringLogic))
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = "!=")
-    if (cclutVal1 != cclutVal2)
+    if (
+         cclutVal1 != cclutVal2
+         or
+         (textlen(cclutVal1) != textlen(cclutVal2) and not cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = "contains")
@@ -132,26 +156,43 @@ subroutine cclut::evaluateComparison(cclutLineNum, cclutCtx, cclutComparison, cc
     endif
   elseif (cclutComparison = "starts with")
     set cclutCondition = concat('"', cclutVal2, '" starts with "', cclutVal1, '"')
-    if (cclutVal1 = substring(1, textlen(cclutVal1), cclutVal2))
+    if (
+         cclutVal1 = substring(1, textlen(cclutVal1), cclutVal2)
+         and
+         (textlen(cclutVal1) <= textlen(cclutVal2) or cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = "not starts with")
     set cclutCondition = concat('"', cclutVal2, '" does not start with "', cclutVal1, '"')
-    if (cclutVal1 != substring(1, textlen(cclutVal1), cclutVal2))
+    if (
+         cclutVal1 != substring(1, textlen(cclutVal1), cclutVal2)
+         or
+         (cclutVal1 = cclutVal2 and textlen(cclutVal1) > textlen(cclutVal2) and not cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = "ends with")
     set cclutCondition = concat('"', cclutVal2, '" ends with "', cclutVal1, '"')
-    if (cclutVal1 = substring(1+textlen(cclutVal2)-textlen(cclutVal1), textlen(cclutVal1), cclutVal2))
+    if (
+         cclutVal1 = substring(1+textlen(cclutVal2)-textlen(cclutVal1), textlen(cclutVal1), cclutVal2)
+         and
+         (textlen(cclutVal1) <= textlen(cclutVal2) or cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   elseif (cclutComparison = "not ends with")
     set cclutCondition = concat('"', cclutVal2, '" does not end with "', cclutVal1, '"')
-    if (cclutVal1 != substring(1+textlen(cclutVal2)-textlen(cclutVal1), textlen(cclutVal1), cclutVal2))
+    if (
+         cclutVal1 != substring(1+textlen(cclutVal2)-textlen(cclutVal1), textlen(cclutVal1), cclutVal2)
+         or
+         (cclutVal1 = cclutVal2 and textlen(cclutVal1) > textlen(cclutVal2) and not cclut::useCclStringLogic)
+       )
       set cclutReturnValue = TRUE
     endif
   endif
 
+  set cclutCondition = replace(cclutCondition, char(0), char(128))
   call cclut::reportAssert(cclutLineNum, cclutCtx, cclutCondition,
                     cclutReturnValue, cclutECodeBefore, cclutEMessageBefore, cclutECode, cclutEMessage)
   return (cclutReturnValue)

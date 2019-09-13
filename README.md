@@ -56,9 +56,6 @@ limitations under the License.
 [ccl-maven-plugin]:https://github.com/cerner/ccl-testing/tree/master/ccl-maven-plugin
 [cclunit-framework-installation]:./doc/FRAMEWORKINSTALL.md
 [ccl-unit-tests]:./doc/CCLUNITTESTS.md
-[cclunit-framework-source]:cclunit-framework-source/README.md
-[cclunit-framework-tests]:cclunit-framework-tests
-[cclunit-framework-schema-xml]:cclunit-framework-schema-xml
 [contibution_guidelines]: CONTRIBUTING.md#contributing
 [release_guidelines]: RELEASING.md
 [mavenized CCL projects]: https://github.com/cerner/ccl-testing/tree/master/ccl-maven-plugin

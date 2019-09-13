@@ -60,7 +60,7 @@ subroutine MAINtestOUTPUTUSAGEINSTRUCTIONS(null)
         "    reside in cclsource: and have a .inc extension unless otherwise specified.", char(10),
         char(32), char(10),
         "For additional information on how the test case is generated and examples, please visit", char(10),
-        "https://github.com/cerner/cclunit-framework/blob/master/doc/CCLUTTEMPLATES.md", char(10)))
+        "https://github.com/cerner/cclunit-framework/blob/master/doc/CCLUTTEMPLATES.md", char(10), char(32), char(10)))
 end
 
 ;**********************************************************************************************************************************
@@ -87,8 +87,8 @@ subroutine MAINtestVALIDATEPARAMETERS(null)
     declare sourceLocation = vc with protect, noconstant("cclsource:differentLocation.prg")
     call VALIDATEPARAMETERS("cclut_generate_test_case", "", sourceLocation)
     set testVALIDATEPARAMETERS__MainWasCalled = TRUE
-    call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS 001", sourceLocation,
-        concat(trim(logical("CCLSOURCE")), "/differentLocation.prg"))
+    declare expected = vc with protect, constant(concat(trim(logical("CCLSOURCE")), "/differentLocation.prg"))
+    call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS 001", sourceLocation, expected)
 end
 subroutine (1_VALIDATEPARAMETERS::CCLUTISEMPTY(parameter = vc) = i2)
     set cclutIsEmptyCount = cclutIsEmptyCount + 1
@@ -142,8 +142,8 @@ subroutine MAINtestVALIDATEPARAMETERS_include_files(null)
     declare sourceLocation = vc with protect, noconstant("")
     call VALIDATEPARAMETERS("cclut_generate_test_case", "test includes", sourceLocation)
     set testVALIDATEPARAMETERS_include_files__MainWasCalled = TRUE
-    call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_include_files 001", sourceLocation,
-        concat(trim(logical("CCLSOURCE")), "/cclut_generate_test_case.prg"))
+    declare expected = vc with protect, constant(concat(trim(logical("CCLSOURCE")), "/cclut_generate_test_case.prg"))
+    call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_include_files 001", sourceLocation, expected)
     call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_include_files 002", includeRec->qual[1].str, "test string")
     call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_include_files 003", includeRec->qual[1].regex_str,
         "test regex string")
@@ -218,11 +218,11 @@ end
 subroutine (VALIDATEPARAMETERS_invalid_script_echorecord(templateReply = vc(ref)) = null)
     call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_invalid_script 002", templateReply->status_data.status, "F")
     call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_invalid_script 003",
-        templateReply->status_data.subeventstatus[1].OperationName, "Validating parameters")
+        trim(templateReply->status_data.subeventstatus[1].OperationName), "Validating parameters")
     call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_invalid_script 004",
         templateReply->status_data.subeventstatus[1].OperationStatus, "F")
     call cclutAssertvcEqual(CURREF, "testVALIDATEPARAMETERS_invalid_script 005",
-        templateReply->status_data.subeventstatus[1].TargetObjectName, "not a program")
+        trim(templateReply->status_data.subeventstatus[1].TargetObjectName), "not a program")
     call cclutAssertVcOperator(CURREF, "testVALIDATEPARAMETERS_invalid_script 006",
         templateReply->status_data.subeventstatus[1].TargetObjectValue, "regexplike",
         concat("%CCL-E-392-CCLUT_GENERATE_TEST_CASE\([^)]+\)[0-9]+:[0-9]+\{CCLEXCEPTION\(\)\}Exception\(100\): ",
@@ -310,7 +310,7 @@ subroutine (1_CREATEPROGRAMXML::CCLUTISEMPTY(programXML = vc) = i2)
         ' lev="3" loc="0.0"/>', char(10),
     '   </CALL.>', char(10),
     '  </Z_CALL.>', char(10),
-    ' </ZC_PROGRAM.>'))
+    ' </ZC_PROGRAM.>', char(10)))
     set cclutIsEmptyCalled = TRUE
     return (FALSE)
 end
@@ -356,18 +356,18 @@ subroutine (2_CREATEPROGRAMXML::CCLUTISEMPTY(programXML = vc) = i2)
         ' lev="3" loc="0.0"/>', char(10),
     '   </CALL.>', char(10),
     '  </Z_CALL.>', char(10),
-    ' </ZC_PROGRAM.>'))
+    ' </ZC_PROGRAM.>', char(10)))
     set cclutIsEmptyCalled = TRUE
     return (TRUE)
 end
 subroutine (CREATEPROGRAMXML_empty_program_echorecord(templateReply = vc(ref)) = null)
     call cclutAssertvcEqual(CURREF, "testCREATEPROGRAMXML_empty_program 002", templateReply->status_data.status, "F")
     call cclutAssertvcEqual(CURREF, "testCREATEPROGRAMXML_empty_program 003",
-        templateReply->status_data.subeventstatus[1].OperationName, "Translate program")
+        trim(templateReply->status_data.subeventstatus[1].OperationName), "Translate program")
     call cclutAssertvcEqual(CURREF, "testCREATEPROGRAMXML_empty_program 004",
         templateReply->status_data.subeventstatus[1].OperationStatus, "F")
     call cclutAssertvcEqual(CURREF, "testCREATEPROGRAMXML_empty_program 005",
-        templateReply->status_data.subeventstatus[1].TargetObjectName, "cclut_generate_test_case_")
+        trim(templateReply->status_data.subeventstatus[1].TargetObjectName), "cclut_generate_test_case_")
     call cclutAssertVcOperator(CURREF, "testCREATEPROGRAMXML_empty_program 006",
         templateReply->status_data.subeventstatus[1].TargetObjectValue, "regexplike",
         concat("%CCL-E-392-CCLUT_GENERATE_TEST_CASE\([^)]+\)[0-9]+:[0-9]+\{CCLEXCEPTION\(\)\}Exception\(100\): ",
@@ -435,11 +435,11 @@ subroutine MAINtestGETNAMEDELEMENTNAME_empty(null)
     ' <SUBROUTINE.>', char(10),
     ' </SUBROUTINE.>', char(10)), hXmlFile)
     set subroutineName = GETNAMEDELEMENTNAME(cclut::getXmlListItemHandle(hXmlTest, "SUBROUTINE.", 1), 4)
-    call cclutAssertvcEqual(CURREF, "testGETNAMEDELEMENTNAME_empty 001", subroutineName, "")
+    call cclutAssertvcEqual(CURREF, "testGETNAMEDELEMENTNAME_empty 001", subroutineName, trim(""))
     set subroutineName = GETNAMEDELEMENTNAME(cclut::getXmlListItemHandle(hXmlTest, "SUBROUTINE.", 1), 3)
-    call cclutAssertvcEqual(CURREF, "testGETNAMEDELEMENTNAME_empty 002", subroutineName, "")
+    call cclutAssertvcEqual(CURREF, "testGETNAMEDELEMENTNAME_empty 002", subroutineName, trim(""))
     set subroutineName = GETNAMEDELEMENTNAME(cclut::getXmlListItemHandle(hXmlTest, "SUBROUTINE.", 2), 1)
-    call cclutAssertvcEqual(CURREF, "testGETNAMEDELEMENTNAME_empty 003", subroutineName, "")
+    call cclutAssertvcEqual(CURREF, "testGETNAMEDELEMENTNAME_empty 003", subroutineName, trim(""))
     set testGETNAMEDELEMENTNAME_empty__MainWasCalled = TRUE
 end
 
@@ -712,11 +712,11 @@ subroutine (FINDPROGRAMSUBROUTINES_program_failure_echorecord(templateReply = vc
     call cclutAssertvcEqual(CURREF, "testFINDPROGRAMSUBROUTINES_program_failure 001", templateReply->status_data.status,
         "F")
     call cclutAssertvcEqual(CURREF, "testFINDPROGRAMSUBROUTINES_program_failure 002",
-        templateReply->status_data.subeventstatus[1].OperationName, "Parse program")
+        trim(templateReply->status_data.subeventstatus[1].OperationName), "Parse program")
     call cclutAssertvcEqual(CURREF, "testFINDPROGRAMSUBROUTINES_program_failure 003",
         templateReply->status_data.subeventstatus[1].OperationStatus, "F")
     call cclutAssertvcEqual(CURREF, "testFINDPROGRAMSUBROUTINES_program_failure 004",
-        templateReply->status_data.subeventstatus[1].TargetObjectName, "test program")
+        trim(templateReply->status_data.subeventstatus[1].TargetObjectName), "test program")
     call cclutAssertVcOperator(CURREF, "testFINDPROGRAMSUBROUTINES_program_failure 005",
         templateReply->status_data.subeventstatus[1].TargetObjectValue, "regexplike",
         concat("%CCL-E-392-CCLUT_GENERATE_TEST_CASE\([^)]+\)[0-9]+:[0-9]+\{CCLEXCEPTION\(\)\}Exception\(100\): ",
@@ -945,24 +945,17 @@ subroutine testGETEXCLUDEDINCLUDELIST(null)
     call cclutExecuteProgramWithMocks("cclut_generate_test_case", "^nl:^", "1_GETEXCLUDEDINCLUDELIST")
 
     call cclutAsserti2Equal(CURREF, "testGETEXCLUDEDINCLUDELIST 004", testGETEXCLUDEDINCLUDELIST__MainWasCalled, TRUE)
-    call cclutAsserti2Equal(CURREF, "testGETEXCLUDEDINCLUDELIST 005", generateIncludeFileRegularExpressionsCalled, TRUE)
 end
 subroutine MAINtestGETEXCLUDEDINCLUDELIST(null)
-    record includeRec (
-        1 qual[*]
-            2 regex_str = vc
-    ) with protect
     record excludeRec (
         1 exclude[*]
             2 str = vc
     ) with protect
     set stat = alterlist(includeRec->qual, 3)
-    set includeRec->qual[1].regex_str = concat("^%[iI][^[:space:]]*[[:space:]]+[Cc][Cc][Ll][Ss][Oo][Uu][Rr][Cc][Ee]",
-        "[::][Tt][Ee][Ss][Tt][__][Ii][Nn][Cc][Ll][Uu][Dd][Ee][..][Ii][Nn][Cc]($|([[:space:]]+.*$))")
-    set includeRec->qual[2].regex_str = concat("^%[iI][^[:space:]]*[[:space:]]+[Cc][Cc][Ll][Ss][Oo][Uu][Rr][Cc][Ee]",
-        "[::][Tt][Ee][Ss][Tt][__][Ii][Nn][Cc][Ll][Uu][Dd][Ee][11][00][..][Ii][Nn][Cc]($|([[:space:]]+.*$))")
-    set includeRec->qual[3].regex_str = concat("^%[iI][^[:space:]]*[[:space:]]+[Cc][Cc][Ll][Uu][Ss][Ee][Rr][Dd][Ii]",
-        "[Rr][::][Tt][Ee][Ss][Tt][__][Ii][Nn][Cc][Ll][Uu][Dd][Ee][55][..][Ii][Nn][Cc]($|([[:space:]]+.*$))")
+    set includeRec->qual[1].str = "cclsource:test_include.inc"
+    set includeRec->qual[2].str = "cclsource:test_include10.inc"
+    set includeRec->qual[3].str = "ccluserdir:test_include5.inc"
+    call generateIncludeFileRegularExpressions(null)
     call GETEXCLUDEDINCLUDELIST(concat(CCLSOURCE_LOCATION, "ut_cclut_excluded_includes.inc"), excludeRec)
     set testGETEXCLUDEDINCLUDELIST__MainWasCalled = TRUE
     call cclutAsserti4Equal(CURREF, "testGETEXCLUDEDINCLUDELIST 001", size(excludeRec->exclude, 5), 4)
@@ -974,9 +967,6 @@ subroutine MAINtestGETEXCLUDEDINCLUDELIST(null)
         "%i ccluserdir:test_include4.inc some junk characters")
     call cclutAssertvcEqual(CURREF, "testGETEXCLUDEDINCLUDELIST 005", excludeRec->exclude[4].str,
         "%INCLUDE CCLUSERDIR:TEST_INCLUDE6.INC")
-end
-subroutine (1_GETEXCLUDEDINCLUDELIST::GENERATEINCLUDEFILEREGULAREXPRESSIONS(null) = null)
-    set generateIncludeFileRegularExpressionsCalled = TRUE
 end
 subroutine (1_GETEXCLUDEDINCLUDELIST::ADDWARNING(null) = null)
    call cclexception(100, "E", "Should not have been called")
@@ -1054,7 +1044,7 @@ subroutine MAINtestCREATEEXCLUDEXML(null)
     '  <LABEL. class="182" lev="1" kid="1" loc="0.0">', char(10),
     '   <NAME class="5" text="END" lev="2" loc="0.0"/>', char(10),
     '  </LABEL.>', char(10),
-    ' </ZC_PROGRAM.>'))
+    ' </ZC_PROGRAM.>', char(10)))
 end
 subroutine (1_CREATEEXCLUDEXML::ADDWARNING(null) = null)
     call cclexception(100, "E", "Should not have been called")
@@ -1094,7 +1084,7 @@ subroutine (1_CREATEEXCLUDEXML::CCLUTISEMPTY(parameter = vc) = i2)
     '  <LABEL. class="182" lev="1" kid="1" loc="0.0">', char(10),
     '   <NAME class="5" text="END" lev="2" loc="0.0"/>', char(10),
     '  </LABEL.>', char(10),
-    ' </ZC_PROGRAM.>'))
+    ' </ZC_PROGRAM.>', char(10)))
     return (FALSE)
 end
 
@@ -1230,7 +1220,7 @@ subroutine MAINtestCREATEEXCLUDEXML_empty_program(null)
     '  <LABEL. class="182" lev="1" kid="1" loc="0.0">', char(10),
     '   <NAME class="5" text="END" lev="2" loc="0.0"/>', char(10),
     '  </LABEL.>', char(10),
-    ' </ZC_PROGRAM.>'))
+    ' </ZC_PROGRAM.>', char(10)))
 end
 subroutine (4_CREATEEXCLUDEXML::ADDWARNING(warning = vc) = null)
     set addWarningCalled = TRUE
@@ -1273,7 +1263,7 @@ subroutine (4_CREATEEXCLUDEXML::CCLUTISEMPTY(parameter = vc) = i2)
     '  <LABEL. class="182" lev="1" kid="1" loc="0.0">', char(10),
     '   <NAME class="5" text="END" lev="2" loc="0.0"/>', char(10),
     '  </LABEL.>', char(10),
-    ' </ZC_PROGRAM.>'))
+    ' </ZC_PROGRAM.>', char(10)))
     return (TRUE)
 end
 
@@ -2121,7 +2111,7 @@ subroutine (1_ADDMOCKTABLESANDALIASES::CCLUTISEMPTY(parameter = vc) = i2)
             call cclutAssertvcEqual(CURREF, "testADDMOCKTABLESANDALIASES 007", parameter, "TESTTABLE3")
             return (FALSE)
         of 6:
-            call cclutAssertvcEqual(CURREF, "testADDMOCKTABLESANDALIASES 008", parameter, "")
+            call cclutAssertvcEqual(CURREF, "testADDMOCKTABLESANDALIASES 008", parameter, trim(""))
             return (TRUE)
     endcase
 end
@@ -2196,7 +2186,7 @@ subroutine (2_ADDMOCKTABLESANDALIASES::CCLUTISEMPTY(parameter = vc) = i2)
             call cclutAssertvcEqual(CURREF, "testADDMOCKTABLESANDALIASES_dummyt_dual 004", parameter, "DUAL")
             return (FALSE)
         of 3:
-            call cclutAssertvcEqual(CURREF, "testADDMOCKTABLESANDALIASES_dummyt_dual 005", parameter, "")
+            call cclutAssertvcEqual(CURREF, "testADDMOCKTABLESANDALIASES_dummyt_dual 005", parameter, trim(""))
             return (TRUE)
     endcase
 end
@@ -2704,7 +2694,7 @@ subroutine (3_HANDLECOLUMNNODEMOCKING::GETNAMEDELEMENTNAME(element = h, index = 
 end
 subroutine (3_HANDLECOLUMNNODEMOCKING::CCLUTISEMPTY(parameter = vc) = i2)
     set cclutIsEmptyCalled = TRUE
-    call cclutAssertvcEqual(CURREF, "testHANDLECOLUMNNODEMOCKING_no_table 003", parameter, "")
+    call cclutAssertvcEqual(CURREF, "testHANDLECOLUMNNODEMOCKING_no_table 003", parameter, trim(""))
     return (TRUE)
 end
 subroutine (3_HANDLECOLUMNNODEMOCKING::ADDMOCKCOLUMN(null) = null)
@@ -2756,7 +2746,7 @@ subroutine (4_HANDLECOLUMNNODEMOCKING::CCLUTISEMPTY(parameter = vc) = i2)
             call cclutAssertvcEqual(CURREF, "testHANDLECOLUMNNODEMOCKING_no_column 003", parameter, "TESTTABLE1")
             return (FALSE)
         of 2:
-            call cclutAssertvcEqual(CURREF, "testHANDLECOLUMNNODEMOCKING_no_column 004", parameter, "")
+            call cclutAssertvcEqual(CURREF, "testHANDLECOLUMNNODEMOCKING_no_column 004", parameter, trim(""))
             return (TRUE)
     endcase
 end
@@ -3073,11 +3063,11 @@ end
 subroutine (CREATEMOCKLIST_invalid_xml_echorecord(templateReply = vc(ref)) = null)
     call cclutAssertvcEqual(CURREF, "testCREATEMOCKLIST_invalid_xml 001", templateReply->status_data.status, "F")
     call cclutAssertvcEqual(CURREF, "testCREATEMOCKLIST_invalid_xml 002",
-        templateReply->status_data.subeventstatus[1].OperationName, "Create Mock List")
+        trim(templateReply->status_data.subeventstatus[1].OperationName), "Create Mock List")
     call cclutAssertvcEqual(CURREF, "testCREATEMOCKLIST_invalid_xml 003",
         templateReply->status_data.subeventstatus[1].OperationStatus, "F")
     call cclutAssertvcEqual(CURREF, "testCREATEMOCKLIST_invalid_xml 004",
-        templateReply->status_data.subeventstatus[1].TargetObjectName, "test script")
+        trim(templateReply->status_data.subeventstatus[1].TargetObjectName), "test script")
     call cclutAssertVcOperator(CURREF, "testCREATEMOCKLIST_invalid_xml 005",
         templateReply->status_data.subeventstatus[1].TargetObjectValue, "regexplike",
         concat("%CCL-E-392-CCLUT_GENERATE_TEST_CASE\([^)]+\)[0-9]+:[0-9]+\{CCLEXCEPTION\(\)\}Exception\(100\): ",
@@ -3139,7 +3129,7 @@ subroutine MAINtestBREAKLINE_too_long(null)
         concat("jklmnopqrstuvwxyz123 abcdefghijklmnopqrstuvwxyz123 abcdefghijklmnopqrstuvwxyz123 ",
         "abcdefghijklmnopqrstuvwxyz123 abcdefghijklmnopqr\"))
     call cclutAssertvcEqual(CURREF, "testBREAKLINE_too_long 004", buffer->lines[3].line,
-        concat("stuvwxyz123 abcdefghijklmnopqrstuvwxyz123 "))
+        "stuvwxyz123 abcdefghijklmnopqrstuvwxyz123")
 end
 
 ;**********************************************************************************************************************************
@@ -3196,7 +3186,7 @@ subroutine MAINtestGENERATESETUPTEARDOWNSUBROUTINES(null)
     call cclutAssertvcEqual(CURREF, "testGENERATESETUPTEARDOWNSUBROUTINES 018", templateRec->testFile[17].line,
         "end")
     call cclutAssertvcEqual(CURREF, "testGENERATESETUPTEARDOWNSUBROUTINES 019", templateRec->testFile[18].line,
-        build(char(10)))
+        trim(""))
 end
 
 ;**********************************************************************************************************************************
@@ -3253,7 +3243,7 @@ subroutine MAINtestGENERATEMOCKSUBROUTINES(null)
     call cclutAssertvcEqual(CURREF, "testGENERATEMOCKSUBROUTINES 015", templateRec->testFile[14].line,
         "end")
     call cclutAssertvcEqual(CURREF, "testGENERATEMOCKSUBROUTINES 016", templateRec->testFile[15].line,
-        build(char(10)))
+        trim(""))
 end
 
 ;**********************************************************************************************************************************
@@ -3292,7 +3282,7 @@ subroutine MAINtestGENERATEMOCKSCRIPTCALLS(null)
     call cclutAssertvcEqual(CURREF, "testGENERATEMOCKSCRIPTCALLS 006", templateRec->testFile[5].line,
         '    call cclutAddMockImplementation("TESTSCRIPT3", "TODO: delete line or add mock script name")')
     call cclutAssertvcEqual(CURREF, "testGENERATEMOCKSCRIPTCALLS 007", templateRec->testFile[6].line,
-        build(char(10)))
+        trim(""))
 end
 
 /* testGENERATEMOCKSCRIPTCALLS_no_scripts *******************************************************************
@@ -3377,7 +3367,7 @@ subroutine MAINtestGENERATEMOCKTABLECALLS(null)
     call cclutAssertvcEqual(CURREF, "testGENERATEMOCKTABLECALLS 014", templateRec->testFile[13].line,
         concat('    call cclutAddMockData("TESTTABLE3", "TODO: delete line or add mock data")'))
     call cclutAssertvcEqual(CURREF, "testGENERATEMOCKTABLECALLS 015", templateRec->testFile[14].line,
-        build(char(10)))
+        trim(""))
 end
 
 /* testGENERATEMOCKTABLECALLS_no_tables *********************************************************************
@@ -3440,13 +3430,13 @@ subroutine MAINtestGENERATETESTCASEDATA(null)
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 009", templateRec->testFile[2].line,
         "    declare testTESTSUBROUTINE1__MainWasCalled = i2 with protect, noconstant(FALSE)")
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 010", templateRec->testFile[3].line,
-        build(char(10)))
+        trim(""))
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 011", templateRec->testFile[4].line,
         '    call cclutAddMockImplementation("MAIN", "MAINtestTESTSUBROUTINE1")')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 012", templateRec->testFile[5].line,
         '    call cclutExecuteProgramWithMocks("test_script", "", "1_TESTSUB")')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 013", templateRec->testFile[6].line,
-        build(char(10)))
+        trim(""))
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 014", templateRec->testFile[7].line,
         '    call cclutAsserti2Equal(CURREF, "testTESTSUBROUTINE1 001", testTESTSUBROUTINE1__MainWasCalled, TRUE)')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 015", templateRec->testFile[8].line,
@@ -3466,7 +3456,7 @@ subroutine MAINtestGENERATETESTCASEDATA(null)
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 022", templateRec->testFile[15].line,
         '    call cclutExecuteProgramWithMocks("test_script", "", "1_MAIN")')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 023", templateRec->testFile[16].line,
-        build(char(10)))
+        trim(""))
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 024", templateRec->testFile[17].line,
         '    call cclutAsserti2Equal(CURREF, "testMAIN auto-generate test.  Fail by default.", TRUE, FALSE)')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 025", templateRec->testFile[18].line,
@@ -3476,13 +3466,13 @@ subroutine MAINtestGENERATETESTCASEDATA(null)
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 027", templateRec->testFile[20].line,
         "    declare testTESTSUBROUTINE2__MainWasCalled = i2 with protect, noconstant(FALSE)")
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 028", templateRec->testFile[21].line,
-        build(char(10)))
+        trim(""))
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 029", templateRec->testFile[22].line,
         '    call cclutAddMockImplementation("MAIN", "MAINtestTESTSUBROUTINE2")')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 030", templateRec->testFile[23].line,
         '    call cclutExecuteProgramWithMocks("test_script", "", "1_5LONGSUBROUTINENAMETHATISGREATERTHAN40")')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 031", templateRec->testFile[24].line,
-        build(char(10)))
+        trim(""))
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 032", templateRec->testFile[25].line,
         '    call cclutAsserti2Equal(CURREF, "testTESTSUBROUTINE2 001", testTESTSUBROUTINE2__MainWasCalled, TRUE)')
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASEDATA 033", templateRec->testFile[26].line,
@@ -3548,7 +3538,7 @@ subroutine MAINtestGENERATEFINALOUTPUT(null)
     set testGENERATEFINALOUTPUT__MainWasCalled = TRUE
     call cclutAssertvcEqual(CURREF, "testGENERATEFINALOUTPUT 004",
         cclut::getFileAsString("ut_cclut_generate_test_case_output.inc"),
-        concat("first line", char(10), "second line", char(10), "third line", char(10), "fourth line", char(10)))
+        concat("first line", char(10), "second line", char(10), "third line", char(10), "fourth line", char(10), " ", char(10)))
 end
 subroutine (1_GENERATEFINALOUTPUT::BREAKLINE(line = vc, buffer = vc(ref)) = null)
     set breakLineCount = breakLineCount + 1
@@ -3597,7 +3587,7 @@ subroutine MAINtestGENERATEFINALOUTPUT_with_warnings(null)
         cclut::getFileAsString("ut_cclut_generate_test_case_output.inc"),
         concat("/* WARNINGS", char(10), "first warning", char(10), "second warning", char(10), "third warning",
             char(10), "fourth warning", char(10), "*/", char(10), "first line", char(10), "second line", char(10),
-            "third line", char(10), "fourth line", char(10)))
+            "third line", char(10), "fourth line", char(10), " ", char(10)))
 end
 subroutine (2_GENERATEFINALOUTPUT::BREAKLINE(line = vc, buffer = vc(ref)) = null)
     set breakLineCount = breakLineCount + 1
@@ -3705,11 +3695,11 @@ end
 subroutine (GENERATETESTCASE_no_main_echorecord(templateReply = vc(ref)) = null)
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASE_no_main 001", templateReply->status_data.status, "F")
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASE_no_main 002",
-        templateReply->status_data.subeventstatus[1].OperationName, "Generate test case")
+        trim(templateReply->status_data.subeventstatus[1].OperationName), "Generate test case")
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASE_no_main 003",
         templateReply->status_data.subeventstatus[1].OperationStatus, "F")
     call cclutAssertvcEqual(CURREF, "testGENERATETESTCASE_no_main 004",
-        templateReply->status_data.subeventstatus[1].TargetObjectName, "test script")
+        trim(templateReply->status_data.subeventstatus[1].TargetObjectName), "test script")
     call cclutAssertVcOperator(CURREF, "testGENERATETESTCASE_no_main 005",
         templateReply->status_data.subeventstatus[1].TargetObjectValue, "regexplike",
         concat("%CCL-E-392-CCLUT_GENERATE_TEST_CASE\([^)]+\)[0-9]+:[0-9]+\{CCLEXCEPTION\(\)\}Exception\(100\): ",
